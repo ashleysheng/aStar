@@ -1,5 +1,6 @@
 from numpy import genfromtxt
 import numpy as np
+import math
 np.set_printoptions(threshold=np.nan)
 
 class coordPoint:
@@ -8,13 +9,35 @@ class coordPoint:
         self.y = y
 
 
+def heuristic_cost(start,goal):
+    return 0 
 
 
-def aStar(start,goal):
+def aStar(start,goal,mapsize):
+    
     closedSet = []
     openSet = []
-    openSet.append(start)
+    heappush(openSet,start)
     cameFrom = []
+    dist= []
+    dist[start] = 0
+    fscore = []
+    
+    for i in mapsize:
+        dist.append[math.inf]
+    for i in mapsize:
+        fscore.append[math.inf]
+    
+    dist[start] = 0
+
+
+    
+    
+
+    
+    
+        
+    
 
 
 
