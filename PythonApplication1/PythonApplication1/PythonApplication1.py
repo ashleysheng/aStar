@@ -2,6 +2,9 @@ from numpy import genfromtxt
 import numpy as np
 import math
 import operator
+import time
+import heapq as heapq
+
 xDimension = 100
 yDimension = 100
 
@@ -114,58 +117,81 @@ def reconstruct_path(cameFrom, currentID):
     while currentID in cameFrom.keys():
         currentID = cameFrom[currentID]
         total_path.append(currentID)
+    total_path.reverse()
     return total_path
 
 
 
 def aStar(startID,goalID,map_data):
-    
+    start = time.time()
+    print("start Time", end= " ")
+    print(start)
     closedSet = []
     openSet = []  # IDs
+    dicOpenSet = {} 
     openSet.append(startID)
     cameFrom = {}
     gScore = {}   # ID --> score
     fScore = {}
     mapsize = xDimension * yDimension
-    for i in range (0, mapsize - 1):
+    for i in range (0, mapsize):
         gScore[i] = 99999
         fScore[i] = 99999
     
     gScore[startID] = 0
     fScore[startID] = heuristic_cost(startID,goalID)
 
-    while openSet:
-        tupleFScore = sorted(fScore.items(), key=operator.itemgetter(1)) # sort by fScore low to high
-        count = 0
-        currentID = tupleFScore[count][0] # ID with lowest fScore
-        while currentID not in openSet:
-            count = count + 1
-            currentID = tupleFScore[count][0] # ID with lowest fScore
+    dicOpenSet[startID] = fScore[startID]
 
+
+    while openSet:
+        
+        currentID = min(dicOpenSet, key = dicOpenSet.get)  
+   
+        #tupleFScore = sorted(fScore.items(), key=operator.itemgetter(1)) # sort by fScore low to high
+      #  count = 0
+       # currentID = tupleFScore[count][0] # ID with lowest fScore
+  
+       # while currentID not in openSet:
+        #    count = count + 1
+        #    currentID = tupleFScore[count][0] # ID with lowest fScore
 
         if currentID == goalID:
+            end = time.time()
+            print("Total Time", end= " ")
+            print( end - start)
             return reconstruct_path(cameFrom, currentID)
 
+
         openSet.remove(currentID)
+        del dicOpenSet[currentID]
+        
+
         if currentID not in closedSet:
             closedSet.append(currentID)
         adjacentNeighbours = getAdjacentNeighbours(currentID,map_data)
         for eachAdjacentNeighbour in adjacentNeighbours:
             if eachAdjacentNeighbour in closedSet:
                 continue
+
             tentative_gScore = gScore[currentID] + 1
+
+         
             if eachAdjacentNeighbour not in openSet:
                 openSet.append(eachAdjacentNeighbour)
+
+            if eachAdjacentNeighbour not in openSet:
+                dicOpenSet[eachAdjacentNeighbour] = fScore[eachAdjacentNeighbour]
             
             if tentative_gScore >= gScore[eachAdjacentNeighbour]:
                 continue
             else:
                 cameFrom[eachAdjacentNeighbour] = currentID
                 gScore[eachAdjacentNeighbour] = tentative_gScore
-                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + heuristic_cost(eachAdjacentNeighbour,goalID)
+                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + heuristic_cost(eachAdjacentNeighbour,goalID) * 0.5
+                dicOpenSet[eachAdjacentNeighbour] = fScore[eachAdjacentNeighbour]
         #    fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour]
      
-        
         cornerNeighbours = getCornerNeighbours(currentID,map_data)
         for eachCornerNeighbour in cornerNeighbours:
             if eachCornerNeighbour in closedSet:
@@ -173,16 +199,19 @@ def aStar(startID,goalID,map_data):
             tentative_gScore = gScore[currentID] + 1.414
             if eachCornerNeighbour not in openSet:
                 openSet.append(eachCornerNeighbour)
-            
-                
+    
+            if eachCornerNeighbour not in openSet:
+                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
+                 
             if tentative_gScore >= gScore[eachCornerNeighbour]:
                 continue
             else:
                 cameFrom[eachCornerNeighbour] = currentID
                 gScore[eachCornerNeighbour] = tentative_gScore
-                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + heuristic_cost(eachCornerNeighbour,goalID)
+                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + heuristic_cost(eachCornerNeighbour,goalID)  * 0.5
+                dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
            # fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour]
-
+        
     return False
 
 
@@ -197,6 +226,27 @@ goalPoint = coordPoint(99,99)
 #print(pointIDToCoordPoint(100))
 #print(pointIDToCoordPoint(99))
 
-print(aStar(0,9999,map_data))
 
 
+print(getAdjacentNeighbours(9898,map_data))
+print(getCornerNeighbours(9898,map_data))
+
+
+print("Clean the map or draw a route")
+response = input("Clean the map or draw a route (1 or 2)")
+
+if(response == "1"):
+    np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
+
+else:
+    print(aStar(0,305,map_data))
+    route = aStar(0,9999,map_data)
+    updated_map_data = map_data
+
+    for i in route:
+        updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
+        #print (pointIDToCoordPoint(i).x, end = '')
+        #print (pointIDToCoordPoint(i).y, end = " " )
+        #print (updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x])
+
+    np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
