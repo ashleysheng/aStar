@@ -61,10 +61,14 @@ def getAdjacentNeighbours(currentID,map_data):
     
     adjacentNeighbours = []
     for each in potentialNeightbours:
-        if each >= 0 and each < mapsize:
+     #   if each >= 0 and each < mapsize:
             coords = pointIDToCoordPoint(each)
-            if map_data[coords.x][coords.y] == 0:
+        #    print(map_data[coords.x][coords.y])
+            if float(map_data[coords.y][coords.x]) == 0.0:
                 adjacentNeighbours.append(each)
+            else:
+                continue
+
     return adjacentNeighbours
 
 def getCornerNeighbours(currentID,map_data):
@@ -99,8 +103,10 @@ def getCornerNeighbours(currentID,map_data):
     for each in potentialNeightbours:
         if each >= 0 and each < mapsize:
             coords = pointIDToCoordPoint(each)
-            if map_data[coords.x][coords.y] == 0:
+            if float(map_data[coords.y][coords.x]) == 0.0:
                 cornerNeighbours.append(each)
+            else:
+                continue
     return cornerNeighbours
 
 def reconstruct_path(cameFrom, currentID):
@@ -187,10 +193,10 @@ map_data = genfromtxt('map_data.csv', delimiter=',')
 startPoint = coordPoint(0,0)
 goalPoint = coordPoint(99,99)
 
-
+#print(map_data[0][0])
 #print(pointIDToCoordPoint(100))
 #print(pointIDToCoordPoint(99))
 
-print(aStar(0,8888,map_data))
+print(aStar(0,9999,map_data))
 
 
