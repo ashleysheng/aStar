@@ -10,17 +10,12 @@ class coordPoint:
         self.x = x
         self.y = y
 
-
-'''***********************************************************************'''
 def coordPointToPointID(coordPoint):
     return coordPoint.x * yDimension + coordPoint.y
 
 def pointIDToCoordPoint(pointID):
     resultPoint = coordPoint(int(pointID/yDimension), pointID % yDimension)
     return resultPoint
-'''***********************************************************************'''
-
-
 
 def heuristic_cost(start,goal):
     startPoint = pointIDToCoordPoint(start)
@@ -113,6 +108,8 @@ def reconstruct_path(cameFrom, currentID):
     total_path = [currentID]
     while currentID in cameFrom.keys():
         currentID = cameFrom[currentID]
+       # coords = pointIDToCoordPoint(currentID)
+       # file.write(str(coords.x*0.00096268-89.31105268)+","+str(-coords.y*0.0005498969+48.41687989)+"\n")
         total_path.append(currentID)
     return total_path
 
@@ -127,17 +124,18 @@ def aStar(startID,goalID,map_data):
     gScore = {}   # ID --> score
     fScore = {}
     mapsize = xDimension * yDimension
-    for i in range (0, mapsize - 1):
+    for i in range (0, mapsize):
         gScore[i] = 99999
         fScore[i] = 99999
     
     gScore[startID] = 0
-    fScore[startID] = heuristic_cost(startID,goalID)
+    fScore[startID] = 0.5 * heuristic_cost(startID,goalID)
+
 
     while openSet:
         tupleFScore = sorted(fScore.items(), key=operator.itemgetter(1)) # sort by fScore low to high
         count = 0
-        currentID = tupleFScore[count][0] # ID with lowest fScore
+        currentID = tupleFScore[count][0]
         while currentID not in openSet:
             count = count + 1
             currentID = tupleFScore[count][0] # ID with lowest fScore
@@ -162,9 +160,7 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachAdjacentNeighbour] = currentID
                 gScore[eachAdjacentNeighbour] = tentative_gScore
-                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + heuristic_cost(eachAdjacentNeighbour,goalID)
-        #    fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour]
-     
+                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + 0.5 * heuristic_cost(eachAdjacentNeighbour,goalID)     
         
         cornerNeighbours = getCornerNeighbours(currentID,map_data)
         for eachCornerNeighbour in cornerNeighbours:
@@ -180,23 +176,18 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachCornerNeighbour] = currentID
                 gScore[eachCornerNeighbour] = tentative_gScore
-                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + heuristic_cost(eachCornerNeighbour,goalID)
-           # fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour]
-
+                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.5 * heuristic_cost(eachCornerNeighbour,goalID)
     return False
+
+
+
+file = open("newfile.txt", "w")
 
 
 
 
 print("This line will be printed.")
 map_data = genfromtxt('map_data.csv', delimiter=',')
-startPoint = coordPoint(0,0)
-goalPoint = coordPoint(99,99)
-
-#print(map_data[0][0])
-#print(pointIDToCoordPoint(100))
-#print(pointIDToCoordPoint(99))
 
 print(aStar(0,9999,map_data))
-
-
+file.close()
