@@ -13,17 +13,12 @@ class coordPoint:
         self.x = x
         self.y = y
 
-
-'''***********************************************************************'''
 def coordPointToPointID(coordPoint):
     return coordPoint.x * yDimension + coordPoint.y
 
 def pointIDToCoordPoint(pointID):
     resultPoint = coordPoint(int(pointID/yDimension), pointID % yDimension)
     return resultPoint
-'''***********************************************************************'''
-
-
 
 def heuristic_cost(start,goal):
     startPoint = pointIDToCoordPoint(start)
@@ -116,6 +111,8 @@ def reconstruct_path(cameFrom, currentID):
     total_path = [currentID]
     while currentID in cameFrom.keys():
         currentID = cameFrom[currentID]
+        coords = pointIDToCoordPoint(currentID)
+        file.write(str(coords.x*0.00096268-89.31105268)+","+str(-coords.y*0.0005498969+48.41687989)+"\n")
         total_path.append(currentID)
     total_path.reverse()
     return total_path
@@ -124,8 +121,8 @@ def reconstruct_path(cameFrom, currentID):
 
 def aStar(startID,goalID,map_data):
     start = time.time()
-    print("start Time", end= " ")
-    print(start)
+  #  print("start Time", end= " ")
+  #  print(start)
     closedSet = []
     openSet = []  # IDs
     dicOpenSet = {} 
@@ -139,7 +136,7 @@ def aStar(startID,goalID,map_data):
         fScore[i] = 99999
     
     gScore[startID] = 0
-    fScore[startID] = heuristic_cost(startID,goalID)
+    fScore[startID] = 0.7 * heuristic_cost(startID,goalID)
 
     dicOpenSet[startID] = fScore[startID]
 
@@ -148,14 +145,6 @@ def aStar(startID,goalID,map_data):
         
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
-        #tupleFScore = sorted(fScore.items(), key=operator.itemgetter(1)) # sort by fScore low to high
-      #  count = 0
-       # currentID = tupleFScore[count][0] # ID with lowest fScore
-  
-       # while currentID not in openSet:
-        #    count = count + 1
-        #    currentID = tupleFScore[count][0] # ID with lowest fScore
-
         if currentID == goalID:
             end = time.time()
             print("Total Time", end= " ")
@@ -188,9 +177,8 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachAdjacentNeighbour] = currentID
                 gScore[eachAdjacentNeighbour] = tentative_gScore
-                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + heuristic_cost(eachAdjacentNeighbour,goalID) * 0.5
+                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + 0.7 * heuristic_cost(eachAdjacentNeighbour,goalID)
                 dicOpenSet[eachAdjacentNeighbour] = fScore[eachAdjacentNeighbour]
-        #    fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour]
      
         cornerNeighbours = getCornerNeighbours(currentID,map_data)
         for eachCornerNeighbour in cornerNeighbours:
@@ -208,29 +196,15 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachCornerNeighbour] = currentID
                 gScore[eachCornerNeighbour] = tentative_gScore
-                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + heuristic_cost(eachCornerNeighbour,goalID)  * 0.5
+                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.7 * heuristic_cost(eachCornerNeighbour,goalID)
                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
-           # fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour]
         
     return False
 
 
 
-
-print("This line will be printed.")
+file = open("newfile.txt", "w")
 map_data = genfromtxt('map_data.csv', delimiter=',')
-startPoint = coordPoint(0,0)
-goalPoint = coordPoint(99,99)
-
-#print(map_data[0][0])
-#print(pointIDToCoordPoint(100))
-#print(pointIDToCoordPoint(99))
-
-
-
-print(getAdjacentNeighbours(9898,map_data))
-print(getCornerNeighbours(9898,map_data))
-
 
 print("Clean the map or draw a route")
 response = input("Clean the map or draw a route (1 or 2)")
@@ -239,14 +213,13 @@ if(response == "1"):
     np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
 
 else:
-    print(aStar(0,305,map_data))
     route = aStar(0,9999,map_data)
+    print(route)
     updated_map_data = map_data
 
     for i in route:
         updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
-        #print (pointIDToCoordPoint(i).x, end = '')
-        #print (pointIDToCoordPoint(i).y, end = " " )
-        #print (updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x])
 
     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
+
+file.close()
