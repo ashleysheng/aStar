@@ -5,38 +5,36 @@ import operator
 import time
 import heapq as heapq
 
-xDimension = 100
-yDimension = 100
 
 class coordPoint:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-def coordPointToPointID(coordPoint):
+def coordPointToPointID(coordPoint,yDimension):
     return coordPoint.x * yDimension + coordPoint.y
 
-def pointIDToCoordPoint(pointID):
+def pointIDToCoordPoint(pointID,yDimension):
     resultPoint = coordPoint(int(pointID/yDimension), pointID % yDimension)
     return resultPoint
 
-def heuristic_cost(start,goal):
-    startPoint = pointIDToCoordPoint(start)
-    goalPoint = pointIDToCoordPoint(goal)
+def heuristic_cost(start,goal,yDimension):
+    startPoint = pointIDToCoordPoint(start,yDimension)
+    goalPoint = pointIDToCoordPoint(goal,yDimension)
     xDiff = math.fabs(startPoint.x-goalPoint.x)
     yDiff = math.fabs(startPoint.y-goalPoint.y)
     result = math.fabs(xDiff - yDiff) + min(xDiff,yDiff) * 1.414
     return result 
 
-def getAdjacentNeighbours(currentID,map_data):
+def getAdjacentNeighbours(currentID,map_data,xDimension,yDimension):
 
     mapsize = xDimension * yDimension
     left = currentID - yDimension # IDs
     right = currentID + yDimension
     top = currentID - 1
     bottom = currentID + 1
-    currentX = pointIDToCoordPoint(currentID).x
-    currentY = pointIDToCoordPoint(currentID).y
+    currentX = pointIDToCoordPoint(currentID,yDimension).x
+    currentY = pointIDToCoordPoint(currentID,yDimension).y
     
     if currentX == 0 and currentY == 0:                             # top left corner
         potentialNeightbours = [right, bottom]
@@ -60,7 +58,7 @@ def getAdjacentNeighbours(currentID,map_data):
     adjacentNeighbours = []
     for each in potentialNeightbours:
      #   if each >= 0 and each < mapsize:
-            coords = pointIDToCoordPoint(each)
+            coords = pointIDToCoordPoint(each,yDimension)
         #    print(map_data[coords.x][coords.y])
             if float(map_data[coords.y][coords.x]) == 0.0:
                 adjacentNeighbours.append(each)
@@ -69,14 +67,14 @@ def getAdjacentNeighbours(currentID,map_data):
 
     return adjacentNeighbours
 
-def getCornerNeighbours(currentID,map_data):
+def getCornerNeighbours(currentID,map_data,xDimension,yDimension):
     mapsize = xDimension * yDimension
     topLeft = currentID - yDimension - 1
     bottomLeft = currentID - yDimension + 1
     topRight = currentID + yDimension - 1
     bottomRight = currentID + yDimension + 1
-    currentX = pointIDToCoordPoint(currentID).x
-    currentY = pointIDToCoordPoint(currentID).y
+    currentX = pointIDToCoordPoint(currentID,yDimension).x
+    currentY = pointIDToCoordPoint(currentID,yDimension).y
 
     if currentX == 0 and currentY == 0:                             # top left corner
         potentialNeightbours = [bottomRight]
@@ -100,18 +98,18 @@ def getCornerNeighbours(currentID,map_data):
     cornerNeighbours = []
     for each in potentialNeightbours:
         if each >= 0 and each < mapsize:
-            coords = pointIDToCoordPoint(each)
+            coords = pointIDToCoordPoint(each,yDimension)
             if float(map_data[coords.y][coords.x]) == 0.0:
                 cornerNeighbours.append(each)
             else:
                 continue
     return cornerNeighbours
 
-def reconstruct_path(cameFrom, currentID):
+def reconstruct_path(cameFrom, currentID,file,yDimension,leftLon,rightLon,topLat,bottomLat):
     total_path = [currentID]
     while currentID in cameFrom.keys():
         currentID = cameFrom[currentID]
-        coords = pointIDToCoordPoint(currentID)
+        coords = pointIDToCoordPoint(currentID,yDimension)
         file.write(str(coords.x*0.00096268-89.31105268)+","+str(-coords.y*0.0005498969+48.41687989)+"\n")
         total_path.append(currentID)
     total_path.reverse()
@@ -119,10 +117,8 @@ def reconstruct_path(cameFrom, currentID):
 
 
 
-def aStar(startID,goalID,map_data):
+def aStar(startID,goalID,map_data,file,xDimension,yDimension,leftLon,rightLon,topLat,bottomLat):
     start = time.time()
-  #  print("start Time", end= " ")
-  #  print(start)
     closedSet = []
     openSet = []  # IDs
     dicOpenSet = {} 
@@ -132,11 +128,11 @@ def aStar(startID,goalID,map_data):
     fScore = {}
     mapsize = xDimension * yDimension
     for i in range (0, mapsize):
-        gScore[i] = 99999
-        fScore[i] = 99999
+        gScore[i] = math.inf
+        fScore[i] = math.inf
     
     gScore[startID] = 0
-    fScore[startID] = 0.7 * heuristic_cost(startID,goalID)
+    fScore[startID] = 0.7 * heuristic_cost(startID,goalID,yDimension)
 
     dicOpenSet[startID] = fScore[startID]
 
@@ -149,7 +145,7 @@ def aStar(startID,goalID,map_data):
             end = time.time()
             print("Total Time", end= " ")
             print( end - start)
-            return reconstruct_path(cameFrom, currentID)
+            return reconstruct_path(cameFrom, currentID,file,yDimension,leftLon,rightLon,topLat,bottomLat)
 
 
         openSet.remove(currentID)
@@ -158,14 +154,13 @@ def aStar(startID,goalID,map_data):
 
         if currentID not in closedSet:
             closedSet.append(currentID)
-        adjacentNeighbours = getAdjacentNeighbours(currentID,map_data)
+        adjacentNeighbours = getAdjacentNeighbours(currentID,map_data,xDimension,yDimension)
         for eachAdjacentNeighbour in adjacentNeighbours:
             if eachAdjacentNeighbour in closedSet:
                 continue
 
             tentative_gScore = gScore[currentID] + 1
 
-         
             if eachAdjacentNeighbour not in openSet:
                 openSet.append(eachAdjacentNeighbour)
 
@@ -177,10 +172,10 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachAdjacentNeighbour] = currentID
                 gScore[eachAdjacentNeighbour] = tentative_gScore
-                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + 0.7 * heuristic_cost(eachAdjacentNeighbour,goalID)
+                fScore[eachAdjacentNeighbour] = gScore[eachAdjacentNeighbour] + 0.7 * heuristic_cost(eachAdjacentNeighbour,goalID,yDimension)
                 dicOpenSet[eachAdjacentNeighbour] = fScore[eachAdjacentNeighbour]
      
-        cornerNeighbours = getCornerNeighbours(currentID,map_data)
+        cornerNeighbours = getCornerNeighbours(currentID,map_data,xDimension,yDimension)
         for eachCornerNeighbour in cornerNeighbours:
             if eachCornerNeighbour in closedSet:
                 continue
@@ -196,30 +191,35 @@ def aStar(startID,goalID,map_data):
             else:
                 cameFrom[eachCornerNeighbour] = currentID
                 gScore[eachCornerNeighbour] = tentative_gScore
-                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.7 * heuristic_cost(eachCornerNeighbour,goalID)
+                fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.7 * heuristic_cost(eachCornerNeighbour,goalID,yDimension)
                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
         
     return False
 
 
+def find_path(_xDimension,_yDimension,leftLon,rightLon,topLat,bottomLat):
+    xDimension = _xDimension
+    yDimension = _yDimension
+    file = open("newfile.txt", "w")
+    map_data = genfromtxt('map_data.csv', delimiter=',')
 
-file = open("newfile.txt", "w")
-map_data = genfromtxt('map_data.csv', delimiter=',')
+    print("Clean the map or draw a route")
+    response = input("Clean the map or draw a route (1 or 2)")
 
-print("Clean the map or draw a route")
-response = input("Clean the map or draw a route (1 or 2)")
+    if(response == "1"):
+        np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
 
-if(response == "1"):
-    np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
+    else:
+        route = aStar(0,9999,map_data,file,xDimension,yDimension,leftLon,rightLon,topLat,bottomLat)
+        print(route)
+        updated_map_data = map_data
 
-else:
-    route = aStar(0,9999,map_data)
-    print(route)
-    updated_map_data = map_data
+        for i in route:
+            updated_map_data[pointIDToCoordPoint(i,yDimension).y][pointIDToCoordPoint(i,yDimension).x] = 2
+        np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
 
-    for i in route:
-        updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
+    file.close()
+    pass
 
-    np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
 
-file.close()
+find_path(100,100,1,2,3,4)
