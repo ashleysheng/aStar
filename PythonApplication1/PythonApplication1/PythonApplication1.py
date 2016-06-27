@@ -5,7 +5,7 @@ import operator
 import time
 import heapq as heapq
 import _thread
-
+import threading
 
 k1 = 0
 k2 = 0
@@ -16,12 +16,12 @@ yDimension = 0
 
 closedSetS = []
 closedSetE = []
-cameFromS = []
-cameFromE = []
+cameFromS = {}
+cameFromE = {}
 stop = False
 confirmStopS = False
 confirmStopE = False
-
+meetingPointID = 0
 class lonLat:
     def __init__(self, lon, lat):
         self.lon = lon
@@ -35,7 +35,8 @@ class coordPoint:
         self.x = x
         self.y = y
 
-def multi_thread_monitor(file,startID,endID):
+def multi_thread_monitor():
+    start = time.time()
     global closedSetS
     global closedSetE
     global cameFromE
@@ -43,10 +44,9 @@ def multi_thread_monitor(file,startID,endID):
     global stop
     global confirmStopS
     global confirmStopE
-
-    meetingPointID
-
+    global meetingPointID
     found = False
+
     while not found:
         for elem in closedSetE:
             if elem in closedSetS:
@@ -60,9 +60,13 @@ def multi_thread_monitor(file,startID,endID):
     while not done:
         if confirmStopS and confirmStopE :
             done = True
-            return reconstruct_path(cameFrom, meetingPointID,file,startID).apppend(reverse(reconstruct_path(cameFrom, meetingPointID,file,endID)))  
+           # print(reconstruct_path(cameFromS, meetingPointID,file,startID,True)+ (reconstruct_path(cameFromE, meetingPointID,file,endID,False)) )
+            end = time.time()
+            print("Total Time", end= " ")
+            print( end - start)
+            return 0
     
-    return 0
+    #return 0
 
 
 def coordPointToPointID(coordPoint):
@@ -168,34 +172,57 @@ def lonLatToCoordPoint(_lonLat):
         return coordPoint(int((_lonLat.lon - b1)/k1),int((_lonLat.lat - b2)/k2))
 
 
-def reconstruct_path(cameFrom, currentID,file,startID):
+def reconstruct_path(endPointID,file,needReverse):
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
-
-    total_path = [currentID]
-   # coords = pointIDToCoordPoint(currentID)
-   # lonlat = coordPointToLonlat(coords)
-    file.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
-    while currentID in cameFrom.keys():
-        currentID = cameFrom[currentID]
-        coords = pointIDToCoordPoint(currentID)
-        lonlat = coordPointToLonlat(coords)
-        if currentID != startID:
+    total_path = []
+    currentID = meetingPointID
+    if needReverse:
+        global cameFromS
+        cameFrom = cameFromS
+        total_path = [currentID]
+        while currentID in cameFrom.keys():
+            currentID = cameFrom[currentID]
+            total_path.append(currentID)
+        total_path.reverse()
+        total_path.remove(endPointID)
+        file.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
+        for each in total_path:
+            coords = pointIDToCoordPoint(each)
+            lonlat = coordPointToLonlat(coords)
             file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
-        total_path.append(currentID)
-    file.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
-    total_path.reverse()
+            
+    else:
+        global cameFromE
+        cameFrom = cameFromE
+        while currentID in cameFrom.keys():
+            currentID = cameFrom[currentID]
+            coords = pointIDToCoordPoint(currentID)
+            lonlat = coordPointToLonlat(coords)
+            if currentID != endPointID:
+                file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
+            else:
+                file.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
+            total_path.append(currentID)
+
     return total_path
 
 
 
-def aStar(startID,goalID,map_data,file):
+def aStar(startID,goalID,map_data,isStart):
+    
     start = time.time()
-    closedSet = []
+    global closedSetE, closedSetS, cameFromE,cameFromS,confirmStopE,confirmStopS
+    if isStart:
+        closedSet = closedSetS
+        cameFrom = cameFromS
+    else:
+        closedSet = closedSetE
+        cameFrom = cameFromE
+
     openSet = []  # IDs
     dicOpenSet = {} 
     openSet.append(startID)
-    cameFrom = {}
     gScore = {}   # ID --> score
     fScore = {}
     mapsize = xDimension * yDimension
@@ -210,15 +237,18 @@ def aStar(startID,goalID,map_data,file):
 
 
     while openSet:
-        
+        if stop: 
+            if isStart:
+                confirmStopS = True
+            else:
+                confirmStopE = True
+            return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
         if currentID == goalID:
             end = time.time()
             print("Total Time", end= " ")
             print( end - start)
-            return reconstruct_path(cameFrom, currentID,file,startID)
-
 
         openSet.remove(currentID)
         del dicOpenSet[currentID]
@@ -266,7 +296,7 @@ def aStar(startID,goalID,map_data,file):
                 fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.7 * heuristic_cost(eachCornerNeighbour,goalID)
                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
         
-    return False
+    #return False
 
 class rectBoundaries:
     def __init__(self, leftLon, rightLon, topLat,bottomLat):
@@ -323,8 +353,22 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
         destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
-        route = aStar(startingID,destID,map_data,file)
-        print(route)
+
+        thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
+        thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
+        thread3 = threading.Thread(target = multi_thread_monitor,args = ())
+        thread1.start()
+        thread2.start()
+        thread3.start()
+        thread1.join()
+        thread2.join()
+        thread3.join()
+
+        print("finished")
+       # print(reconstruct_path(startingID,file,True) )
+     #   print(reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False)) )
+
+        route = reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False))
         updated_map_data = map_data
 
         for i in route:
@@ -340,4 +384,4 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
 
 
 
-find_path(100,100,-82.243164,47.749019,-88.275146,52.032225)
+find_path(170,170,-82.243164,47.749019,-88.275146,52.032225)
