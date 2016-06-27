@@ -5,11 +5,26 @@ import operator
 import time
 import heapq as heapq
 
+import  _thread 
+import time
+
+
 
 class coordPoint:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+class pair:
+    def __init__(self, id, score):
+        self.id = id
+        self.score = score
+
+    def __lt__(self, other): 
+        return self.score < other.score
+       
+def Bi_directional_path_combinator 
+
 
 def coordPointToPointID(coordPoint,yDimension):
     return coordPoint.x * yDimension + coordPoint.y
@@ -122,6 +137,8 @@ def aStar(startID,goalID,map_data,file,xDimension,yDimension,leftLon,rightLon,to
     closedSet = []
     openSet = []  # IDs
     dicOpenSet = {} 
+    listOpenSet = []
+
     openSet.append(startID)
     cameFrom = {}
     gScore = {}   # ID --> score
@@ -135,11 +152,14 @@ def aStar(startID,goalID,map_data,file,xDimension,yDimension,leftLon,rightLon,to
     fScore[startID] = 0.7 * heuristic_cost(startID,goalID,yDimension)
 
     dicOpenSet[startID] = fScore[startID]
-
+    
+    heapq.heapify(listOpenSet)
+    heapq.heappush(listOpenSet,pair(startID,fScore[startID]))
 
     while openSet:
         
-        currentID = min(dicOpenSet, key = dicOpenSet.get)  
+        currentID = min(dicOpenSet, key = dicOpenSet.get)
+ 
    
         if currentID == goalID:
             end = time.time()
@@ -164,9 +184,6 @@ def aStar(startID,goalID,map_data,file,xDimension,yDimension,leftLon,rightLon,to
             if eachAdjacentNeighbour not in openSet:
                 openSet.append(eachAdjacentNeighbour)
 
-            if eachAdjacentNeighbour not in openSet:
-                dicOpenSet[eachAdjacentNeighbour] = fScore[eachAdjacentNeighbour]
-            
             if tentative_gScore >= gScore[eachAdjacentNeighbour]:
                 continue
             else:
@@ -180,11 +197,10 @@ def aStar(startID,goalID,map_data,file,xDimension,yDimension,leftLon,rightLon,to
             if eachCornerNeighbour in closedSet:
                 continue
             tentative_gScore = gScore[currentID] + 1.414
+
             if eachCornerNeighbour not in openSet:
                 openSet.append(eachCornerNeighbour)
-    
-            if eachCornerNeighbour not in openSet:
-                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
+
                  
             if tentative_gScore >= gScore[eachCornerNeighbour]:
                 continue
@@ -222,4 +238,9 @@ def find_path(_xDimension,_yDimension,leftLon,rightLon,topLat,bottomLat):
     pass
 
 
+a = pair(40,60)
+b = pair(30,120)
+print(a < b)
 find_path(100,100,1,2,3,4)
+
+
