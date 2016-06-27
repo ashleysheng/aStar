@@ -4,6 +4,8 @@ import math
 import operator
 import time
 import heapq as heapq
+import _thread
+
 
 k1 = 0
 k2 = 0
@@ -11,6 +13,14 @@ b1 = 0
 b2 = 0
 xDimension = 0
 yDimension = 0
+
+closedSetS = []
+closedSetE = []
+cameFromS = []
+cameFromE = []
+stop = False
+confirmStopS = False
+confirmStopE = False
 
 class lonLat:
     def __init__(self, lon, lat):
@@ -24,6 +34,36 @@ class coordPoint:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+def multi_thread_monitor(file,startID,endID):
+    global closedSetS
+    global closedSetE
+    global cameFromE
+    global cameFromS
+    global stop
+    global confirmStopS
+    global confirmStopE
+
+    meetingPointID
+
+    found = False
+    while not found:
+        for elem in closedSetE:
+            if elem in closedSetS:
+                meetingPointID = elem
+                found = True
+                stop = True
+                continue
+    
+    done = False
+
+    while not done:
+        if confirmStopS and confirmStopE :
+            done = True
+            return reconstruct_path(cameFrom, meetingPointID,file,startID).apppend(reverse(reconstruct_path(cameFrom, meetingPointID,file,endID)))  
+    
+    return 0
+
 
 def coordPointToPointID(coordPoint):
     return coordPoint.x * yDimension + coordPoint.y
@@ -284,7 +324,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
         destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
         route = aStar(startingID,destID,map_data,file)
-     #   route = aStar(startingID,destID,map_data,file,boundaries.leftLon,boundaries.rightLon,boundaries.topLat,boundaries.bottomLat)
         print(route)
         updated_map_data = map_data
 
@@ -296,5 +335,9 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     pass
 
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
+
+
+
+
 
 find_path(100,100,-82.243164,47.749019,-88.275146,52.032225)
