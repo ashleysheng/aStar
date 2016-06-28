@@ -13,14 +13,15 @@ b1 = 0
 b2 = 0
 xDimension = 0
 yDimension = 0
-
+notReachable = False
+errorMessage = ""
 closedSetS = []
 closedSetE = []
 cameFromS = {}
 cameFromE = {}
 stop = False
-confirmStopS = False
-confirmStopE = False
+#confirmStopS = False
+#confirmStopE = False
 meetingPointID = 0
 class lonLat:
     def __init__(self, lon, lat):
@@ -41,32 +42,35 @@ def multi_thread_monitor():
     global closedSetE
     global cameFromE
     global cameFromS
+    global notReachable
     global stop
-    global confirmStopS
-    global confirmStopE
+    #global confirmStopS
+    #global confirmStopE
     global meetingPointID
     found = False
 
-    while not found:
+    while not found and not notReachable:
         for elem in closedSetE:
+            if notReachable:
+                break
             if elem in closedSetS:
                 meetingPointID = elem
                 found = True
                 stop = True
                 continue
-    
-    done = False
+           
 
-    while not done:
-        if confirmStopS and confirmStopE :
-            done = True
-           # print(reconstruct_path(cameFromS, meetingPointID,file,startID,True)+ (reconstruct_path(cameFromE, meetingPointID,file,endID,False)) )
-            end = time.time()
-            print("Total Time", end= " ")
-            print( end - start)
-            return 0
+    #done = False
+
+    #while not done:
+    #    if confirmStopS and confirmStopE :
+    #        done = True
+    #        end = time.time()
+    #        print("Total Time", end= " ")
+    #        print( end - start)
+    #        return 0
     
-    #return 0
+    return 0
 
 
 def coordPointToPointID(coordPoint):
@@ -212,7 +216,8 @@ def reconstruct_path(endPointID,file,needReverse):
 def aStar(startID,goalID,map_data,isStart):
     
     start = time.time()
-    global closedSetE, closedSetS, cameFromE,cameFromS,confirmStopE,confirmStopS
+    global closedSetE, closedSetS, cameFromE,cameFromS    #,confirmStopE,confirmStopS
+    global notReachable, errorMessage
     if isStart:
         closedSet = closedSetS
         cameFrom = cameFromS
@@ -222,6 +227,12 @@ def aStar(startID,goalID,map_data,isStart):
 
     openSet = []  # IDs
     dicOpenSet = {} 
+    startX = pointIDToCoordPoint(startID).x
+    startY = pointIDToCoordPoint(startID).y
+    if float(map_data[startY][startX]) != 0.0:
+        notReachable = True
+        errorMessage = "starting point/destination point not reachable"
+        return 0
     openSet.append(startID)
     gScore = {}   # ID --> score
     fScore = {}
@@ -238,10 +249,10 @@ def aStar(startID,goalID,map_data,isStart):
 
     while openSet:
         if stop: 
-            if isStart:
-                confirmStopS = True
-            else:
-                confirmStopE = True
+            #if isStart:
+            #    confirmStopS = True
+            #else:
+            #    confirmStopE = True
             return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
@@ -295,8 +306,10 @@ def aStar(startID,goalID,map_data,isStart):
                 gScore[eachCornerNeighbour] = tentative_gScore
                 fScore[eachCornerNeighbour] = gScore[eachCornerNeighbour] + 0.7 * heuristic_cost(eachCornerNeighbour,goalID)
                 dicOpenSet[eachCornerNeighbour] = fScore[eachCornerNeighbour]
-        
-    #return False
+      
+    notReachable = True
+    errorMessage = "path not found"
+    return 0
 
 class rectBoundaries:
     def __init__(self, leftLon, rightLon, topLat,bottomLat):
@@ -326,7 +339,7 @@ def get_boundaries(startingLon,startingLat,destLon,destLat):
 def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
-
+    global notReachable
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
 
@@ -346,13 +359,18 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         destinationPoint.lon = destLon
         xDimension = _xDimension
         yDimension = _yDimension
-        k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension-1)
-        k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension-1)
+        k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
+        k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
         b1 = boundaries.leftLon
         b2 = boundaries.topLat
         
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
         destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
+
+        #startX = pointIDToCoordPoint(startingID).x
+        #startY = pointIDToCoordPoint(startingID).y
+        #if float(map_data[startY][startX]) != 0.0:
+        #    print(  "starting point/destination point not reachable")
 
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
@@ -364,24 +382,20 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         thread2.join()
         thread3.join()
 
+
         print("finished")
-       # print(reconstruct_path(startingID,file,True) )
-     #   print(reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False)) )
+        
+        if not notReachable:
+            route = reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False))
+            updated_map_data = map_data
 
-        route = reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False))
-        updated_map_data = map_data
-
-        for i in route:
-            updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
-        np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
-
+            for i in route:
+                updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
+            np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
+        else:
+            print(errorMessage)
     file.close()
     pass
 
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
-
-
-
-
-
-find_path(170,170,-82.243164,47.749019,-88.275146,52.032225)
+find_path(190,190,-82.243164,47.749019,-88.275146,52.032225)
