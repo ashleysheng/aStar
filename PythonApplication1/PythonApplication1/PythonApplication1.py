@@ -105,13 +105,11 @@ def getAdjacentNeighbours(currentID,map_data):
     
     adjacentNeighbours = []
     for each in potentialNeightbours:
-     #   if each >= 0 and each < mapsize:
-            coords = pointIDToCoordPoint(each)
-        #    print(map_data[coords.x][coords.y])
-            if float(map_data[coords.y][coords.x]) == 0.0:
-                adjacentNeighbours.append(each)
-            else:
-                continue
+        coords = pointIDToCoordPoint(each)
+        if float(map_data[coords.y][coords.x]) == 0.0:
+            adjacentNeighbours.append(each)
+        else:
+            continue
 
     return adjacentNeighbours
 
@@ -161,6 +159,13 @@ def lonLatToCoordPoint(_lonLat):
     if(k1 != 0 and k2 != 0):
         return coordPoint(int((_lonLat.lon - b1)/k1),int((_lonLat.lat - b2)/k2))
 
+def lonToX(longitude):
+    if (k1 != 0):
+        return int((longitude - b1)/k1)
+    
+def latToY(latitude):
+    if(k2 != 0):
+        return int((latitude - b2)/k2)
 
 def reconstruct_path(endPointID,file,needReverse):
     # xf = k1 * xi + b1
@@ -357,73 +362,37 @@ def setUpMap(line,map_data):
     leftLon = (centerLon * q-k)/q
     rightLon = (centerLon * q+k)/q
 
-    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat+0.3),True,radius).lat)
-    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat-0.3),True,radius).lat)
-    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon+0.3,centerLat),False,radius).lon)
-    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon-0.3,centerLat),False,radius).lon)
-
-    #print(haversine(lonLat(50,38),lonLat(50,40)))
+    topZoneLat = get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat+0.3),True,radius).lat
+    bottomZoneLat = get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat-0.3),True,radius).lat
+    rightZoneLon = get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon+0.3,centerLat),False,radius).lon
+    leftZoneLon = get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon-0.3,centerLat),False,radius).lon
     
-    #print(centerLat)
-    #print(radius)
-    #print(topLat)
-    #print(bottomLat)
-    #print(leftLon)
-    #print(rightLon)
+    topY = latToY(topZoneLat)
+    bottomY = latToY(bottomZoneLat)
+    rightX = lonToX(rightZoneLon)
+    leftX = lonToX(leftZoneLon)
 
+    print(topY)
+    print(bottomY)
+    print(rightX)
+    print(leftX)
+
+    updated_map_data = map_data
+
+    for y in range (topY, bottomY+1):
+        for x in range (leftX, rightX+1):
+            updated_map_data[y][x] = 1
+    np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     
     return 0
 
 def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
-
-
-
-
-
 
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     global notReachable
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
-
-
-
-    
-    geoDataFile = open("NFZ data.txt","r")
-    rows = (row.strip().split() for row in geoDataFile)
-    geoData = [[]]
-
-    rowNum = 0
-    for eachline in rows:
-        geoData.append([])
-        geoData[rowNum].append(eachline[1])
-        geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
-        geoData[rowNum].append(eachline[2])
-        geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N",""))/10000
-        geoData[rowNum].append(eachline[3])
-        geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-"))/10000
-        rowNum = rowNum + 1
-
-    for eachLine in geoData:
-        if eachLine != []:
-            print(eachLine)
-            setUpMap(eachLine,map_data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     print("Clean the map or draw a route")
     response = input("Clean the map or draw a route (1 or 2)")
@@ -445,6 +414,27 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
         b1 = boundaries.leftLon
         b2 = boundaries.topLat
+
+        geoDataFile = open("NFZ data.txt","r")
+        rows = (row.strip().split() for row in geoDataFile)
+        geoData = [[]]
+
+        rowNum = 0
+        for eachline in rows:
+            geoData.append([])
+            geoData[rowNum].append(eachline[1])
+            geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
+            geoData[rowNum].append(eachline[2])
+            geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N",""))/10000
+            geoData[rowNum].append(eachline[3])
+            geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-"))/10000
+            rowNum = rowNum + 1
+
+        for eachLine in geoData:
+            if eachLine != []:
+                print(eachLine)
+                setUpMap(eachLine,map_data)
+
         
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
         destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
@@ -462,7 +452,7 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         print("finished")
         
         if not notReachable:
-            route = reconstruct_path(startingID,file,True)+ (reconstruct_path(destID,file,False))
+            route = reconstruct_path(startingID,file,True) + reconstruct_path(destID,file,False)
             updated_map_data = map_data
 
             for i in route:
@@ -474,4 +464,4 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     pass
 
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
-find_path(190,190,-85.243164,47.749019,-90.275146,52.032225)
+find_path(100,100,-87.243164,47.749019,-90.275146,50.032225)
