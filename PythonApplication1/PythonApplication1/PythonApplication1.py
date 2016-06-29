@@ -7,6 +7,7 @@ import heapq as heapq
 import _thread
 import threading
 
+EARTH_RADIUS = 6371
 k1 = 0
 k2 = 0
 b1 = 0
@@ -20,8 +21,6 @@ closedSetE = []
 cameFromS = {}
 cameFromE = {}
 stop = False
-#confirmStopS = False
-#confirmStopE = False
 meetingPointID = 0
 class lonLat:
     def __init__(self, lon, lat):
@@ -44,8 +43,6 @@ def multi_thread_monitor():
     global cameFromS
     global notReachable
     global stop
-    #global confirmStopS
-    #global confirmStopE
     global meetingPointID
     found = False
 
@@ -58,17 +55,6 @@ def multi_thread_monitor():
                 found = True
                 stop = True
                 continue
-           
-
-    #done = False
-
-    #while not done:
-    #    if confirmStopS and confirmStopE :
-    #        done = True
-    #        end = time.time()
-    #        print("Total Time", end= " ")
-    #        print( end - start)
-    #        return 0
     
     return 0
 
@@ -216,7 +202,7 @@ def reconstruct_path(endPointID,file,needReverse):
 def aStar(startID,goalID,map_data,isStart):
     
     start = time.time()
-    global closedSetE, closedSetS, cameFromE,cameFromS    #,confirmStopE,confirmStopS
+    global closedSetE, closedSetS, cameFromE,cameFromS 
     global notReachable, errorMessage
     if isStart:
         closedSet = closedSetS
@@ -249,10 +235,6 @@ def aStar(startID,goalID,map_data,isStart):
 
     while openSet:
         if stop: 
-            #if isStart:
-            #    confirmStopS = True
-            #else:
-            #    confirmStopE = True
             return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
@@ -336,12 +318,112 @@ def get_boundaries(startingLon,startingLat,destLon,destLat):
         boundaries.bottomLat = latAverage - (lonDiff+1)/2
     return boundaries
 
+
+def haversine(lonlat1,lonlat2):
+    global EARTH_RADIUS
+    dlon = math.radians(math.fabs(lonlat1.lon - lonlat2.lon))
+    dlat = math.radians(math.fabs(lonlat1.lat - lonlat2.lat))
+    a = math.pow(math.sin(dlat/2),2) + math.cos(math.radians(lonlat1.lat)) * math.cos(math.radians(lonlat2.lat)) * math.pow(math.sin(dlon/2),2)
+    c = 2 * math.atan2(math.sqrt(a),math.sqrt(1-a))
+    distance = EARTH_RADIUS *c
+    return distance
+
+def get_bound_point(lonlatcenter,lonlatlower,lonlatupper,keepLon,radius):
+    if keepLon:
+        lonlatmid = lonLat(lonlatlower.lon, (lonlatlower.lat+lonlatupper.lat)/2)
+    else:
+        lonlatmid = lonLat((lonlatlower.lon+lonlatupper.lon)/2, lonlatlower.lat)
+    distance = haversine(lonlatcenter,lonlatmid)
+    if distance - radius < 0.001 and distance - radius >= 0:
+        return lonlatmid
+    if distance > radius:
+        return get_bound_point(lonlatcenter,lonlatlower,lonlatmid,keepLon,radius)
+    if distance < radius:
+        return get_bound_point(lonlatcenter,lonlatmid,lonlatupper,keepLon,radius)
+    
+
+def setUpMap(line,map_data):
+    global EARTH_RADIUS
+    centerLat = line[1]
+    centerLon = line[2]
+    radius = line[0]
+    # (x,y) = (lon * cos(lat avg) , lat)
+    # d = R * sqrt((y2-y1)^2 + (x2-x1)^2)
+
+    k = radius/EARTH_RADIUS
+    topLat = centerLat + k 
+    bottomLat = centerLat - k
+    q =  math.cos(centerLat/180*math.pi)
+    leftLon = (centerLon * q-k)/q
+    rightLon = (centerLon * q+k)/q
+
+    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat+0.3),True,radius).lat)
+    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon,centerLat-0.3),True,radius).lat)
+    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon+0.3,centerLat),False,radius).lon)
+    print(get_bound_point(lonLat(centerLon,centerLat),lonLat(centerLon,centerLat),lonLat(centerLon-0.3,centerLat),False,radius).lon)
+
+    #print(haversine(lonLat(50,38),lonLat(50,40)))
+    
+    #print(centerLat)
+    #print(radius)
+    #print(topLat)
+    #print(bottomLat)
+    #print(leftLon)
+    #print(rightLon)
+
+    
+    return 0
+
 def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
+
+
+
+
+
+
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     global notReachable
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
+
+
+
+    
+    geoDataFile = open("NFZ data.txt","r")
+    rows = (row.strip().split() for row in geoDataFile)
+    geoData = [[]]
+
+    rowNum = 0
+    for eachline in rows:
+        geoData.append([])
+        geoData[rowNum].append(eachline[1])
+        geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
+        geoData[rowNum].append(eachline[2])
+        geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N",""))/10000
+        geoData[rowNum].append(eachline[3])
+        geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-"))/10000
+        rowNum = rowNum + 1
+
+    for eachLine in geoData:
+        if eachLine != []:
+            print(eachLine)
+            setUpMap(eachLine,map_data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     print("Clean the map or draw a route")
     response = input("Clean the map or draw a route (1 or 2)")
@@ -367,11 +449,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
         destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
 
-        #startX = pointIDToCoordPoint(startingID).x
-        #startY = pointIDToCoordPoint(startingID).y
-        #if float(map_data[startY][startX]) != 0.0:
-        #    print(  "starting point/destination point not reachable")
-
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -381,7 +458,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         thread1.join()
         thread2.join()
         thread3.join()
-
 
         print("finished")
         
@@ -398,4 +474,4 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     pass
 
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
-find_path(190,190,-82.243164,47.749019,-88.275146,52.032225)
+find_path(190,190,-85.243164,47.749019,-90.275146,52.032225)
