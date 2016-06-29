@@ -352,6 +352,7 @@ def setUpMap(line,map_data):
     centerLat = line[1]
     centerLon = line[2]
     radius = line[0]
+    center = lonLat(centerLon,centerLat)
     # (x,y) = (lon * cos(lat avg) , lat)
     # d = R * sqrt((y2-y1)^2 + (x2-x1)^2)
 
@@ -381,7 +382,11 @@ def setUpMap(line,map_data):
 
     for y in range (topY, bottomY+1):
         for x in range (leftX, rightX+1):
-            updated_map_data[y][x] = 1
+            checkPoint = coordPoint(x,y)
+            checkLonlat = coordPointToLonlat(checkPoint)
+            if haversine(checkLonlat,center) <= 9:
+                updated_map_data[y][x] = 1
+
     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     
     return 0
