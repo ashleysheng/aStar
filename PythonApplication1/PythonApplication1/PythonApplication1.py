@@ -347,14 +347,24 @@ def get_bound_point(lonlatcenter,lonlatlower,lonlatupper,keepLon,radius):
         return get_bound_point(lonlatcenter,lonlatmid,lonlatupper,keepLon,radius)
     
 
-def setUpMap(line,map_data):
-    global EARTH_RADIUS
+def setUpMap(line,map_data, boundaries):
+    global EARTH_RADIUS, xDimension,yDimension
+
     centerLat = line[1]
     centerLon = line[2]
     radius = line[0]
     center = lonLat(centerLon,centerLat)
     # (x,y) = (lon * cos(lat avg) , lat)
     # d = R * sqrt((y2-y1)^2 + (x2-x1)^2)
+
+    if boundaries.bottomLat > centerLat:
+        return 0
+    elif boundaries.topLat < centerLat:
+        return 0
+    elif boundaries.leftLon > centerLon:
+        return 0
+    elif boundaries.rightLon < centerLon:
+        return 0
 
     k = radius/EARTH_RADIUS
     topLat = centerLat + k 
@@ -384,7 +394,7 @@ def setUpMap(line,map_data):
         for x in range (leftX, rightX+1):
             checkPoint = coordPoint(x,y)
             checkLonlat = coordPointToLonlat(checkPoint)
-            if haversine(checkLonlat,center) <= 9:
+            if x>=0 and x< xDimension and y>=0 and x<yDimension and haversine(checkLonlat,center) <= 9:
                 updated_map_data[y][x] = 1
 
     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
@@ -438,7 +448,7 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         for eachLine in geoData:
             if eachLine != []:
                 print(eachLine)
-                setUpMap(eachLine,map_data)
+                setUpMap(eachLine,map_data,boundaries)
 
         
         startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
@@ -469,4 +479,4 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     pass
 
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
-find_path(100,100,-87.243164,47.749019,-90.275146,50.032225)
+find_path(100,100,-77.243164,42.749019,-80.275146,44.032225)
