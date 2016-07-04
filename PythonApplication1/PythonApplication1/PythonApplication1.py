@@ -6,6 +6,28 @@ import time
 import heapq as heapq
 import _thread
 import threading
+import tkinter as tk
+from tkinter import *
+root = tk.Tk()
+canvas_1 = Canvas(root,width=1200,height = 1000,background = "white")
+
+route = []
+
+
+#canvas_1.create_line(10, 20, 50, 100) 
+#root.mainloop()
+
+
+
+#class Application(tk.Frame):              
+#    def __init__(self, master=None):
+#        tk.Frame.__init__(self, master)   
+#        self.grid()                       
+#        self.createWidgets()
+
+#    def createWidgets(self):
+#        self.quitButton = tk.Button(self, text='Quit', command=self.quit)            
+#        self.quitButton.grid()            
 
 EARTH_RADIUS = 6371
 k1 = 0
@@ -34,6 +56,32 @@ class coordPoint:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+class Example(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent)
+        self.canvas = tk.Canvas(self, width=400,  height=400, 
+                                background="bisque")
+        self.canvas.pack(fill="both", expand=True)
+
+        graphic1 = GraphicObject(10,10,100,100, name="graphic1")
+        graphic2 = GraphicObject(110,110,200,200, name="graphic2")
+
+        graphic1.draw(self.canvas)
+        graphic2.draw(self.canvas)
+
+class GraphicObject(object):
+    def __init__(self, x0,y0,x1,y1, name=None):
+        self.coords = (x0,y0,x1,y1)
+        self.name = name
+
+    def draw(self, canvas, outline="black", fill="white"):
+        item = canvas.create_oval(self.coords, outline=outline, fill=fill)
+        canvas.tag_bind(item, "<1>", self.mouse_click)
+
+    def mouse_click(self, event):
+        print ("I got a mouse click (%s)" % self.name)
+
 
 def multi_thread_monitor():
     start = time.time()
@@ -167,7 +215,24 @@ def latToY(latitude):
     if(k2 != 0):
         return int((latitude - b2)/k2)
 
-def reconstruct_path(endPointID,file,needReverse):
+def xToLon(xValue):
+    return xValue * k1 + b1
+def yToLat(yValue):
+    return yValue * k2 + b2
+
+def callback(event):
+
+    print ("clicked at", event.x, event.y)
+
+
+def motion(event):
+    global canvas_1
+    x, y = event.x, event.y
+    #canvas_1.create_oval([x-1,y-1,x+1,y+1])
+    #print('{}, {}'.format(xToLon(x/10), yToLat(y/10)))
+
+def reconstruct_path(endPointID,file,needReverse,canvas):
+    global canvas_1
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     total_path = []
@@ -182,18 +247,33 @@ def reconstruct_path(endPointID,file,needReverse):
         total_path.reverse()
         total_path.remove(endPointID)
         file.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
+        temp = 0
         for each in total_path:
+            temp += 1
             coords = pointIDToCoordPoint(each)
+            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="red",outline = "red",activefill="green",activeoutline = "green", activewidth = 10)
+            
             lonlat = coordPointToLonlat(coords)
+            if temp % 5 == 0:
+                xyT = [coords.x*10+20,coords.y*10-1] 
+                canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
             file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
             
+    #xyS = [x_anchor_start, y_anchor_start] 
+    #canvas_1.create_text(xyS, text="Starting Point") 
     else:
+        temp = 0
         global cameFromE
         cameFrom = cameFromE
         while currentID in cameFrom.keys():
+            temp += 1
             currentID = cameFrom[currentID]
             coords = pointIDToCoordPoint(currentID)
+            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="red",outline = "red",activefill="green",activeoutline = "green", activewidth = 10 )
             lonlat = coordPointToLonlat(coords)
+            if temp % 5 == 0:
+                xyT = [coords.x*10+20,coords.y*10-1]
+                canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
             if currentID != endPointID:
                 file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
             else:
@@ -304,6 +384,12 @@ class rectBoundaries:
         self.rightLon = rightLon
         self.topLat = topLat
         self.bottomLat = bottomLat
+class rectBoundariesInXY:
+    def __init__(self, leftX, rightX, topY,bottomY):
+        self.leftX = leftX
+        self.rightX= rightX
+        self.topY = topY
+        self.bottomY = bottomY
 
 def get_boundaries(startingLon,startingLat,destLon,destLat):
     lonDiff = math.fabs(startingLon-destLon)
@@ -399,84 +485,152 @@ def setUpMap(line,map_data, boundaries):
 
     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     
-    return 0
+    return rectBoundariesInXY(leftX,rightX,topY,bottomY)
 
 def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
-
+    
+    global root
+    #Example(root).pack(fill="both",expand = True)
+    #root.mainloop()
+    global canvas_1
+   # canvas_1 = Canvas(root,width=1200,height = 1000)
+    canvas_1.grid(row = 0,column = 1)
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
-    global notReachable
+    global notReachable,route
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
 
-    print("Clean the map or draw a route")
-    response = input("Clean the map or draw a route (1 or 2)")
+    #print("Clean the map or draw a route")
+    #response = input("Clean the map or draw a route (1 or 2)")
 
-    if(response == "1"):
-        np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
+    #if(response == "1"):
+    #    np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
 
+    boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
+
+    global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
+    startingPoint.lon = startingLon
+    startingPoint.lat = startingLat
+    destinationPoint.lat = destLat
+    destinationPoint.lon = destLon
+    xDimension = _xDimension
+    yDimension = _yDimension
+    k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
+    k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
+    b1 = boundaries.leftLon
+    b2 = boundaries.topLat
+
+    geoDataFile = open("NFZ data.txt","r")
+    rows = (row.strip().split() for row in geoDataFile)
+    geoData = [[]]
+
+    rowNum = 0
+    nameTextObjects = []
+    for eachline in rows:
+        geoData.append([])
+        print(eachline)
+        geoData[rowNum].append(eachline[1])
+        geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
+        geoData[rowNum].append(eachline[2])
+        geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N","")) #lat
+        geoData[rowNum].append(eachline[3])
+        geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-")) # lon
+        name = ""
+        for counter in range (4,len(eachline)):
+            name += eachline[counter]
+            name += " "
+        xyText = [10*lonToX(geoData[rowNum][2]),10*latToY(geoData[rowNum][1])+20] 
+        nameObject = canvas_1.create_text(xyText, text=name)
+        nameTextObjects.append(nameObject)
+        rowNum = rowNum + 1
+
+    img = PhotoImage(file="d.png")
+
+    for eachLine in geoData:
+        if eachLine != []:
+            rectXY = setUpMap(eachLine,map_data,boundaries)
+            if rectXY != 0:
+                xy = [10*rectXY.leftX, 10*rectXY.topY, 10*rectXY.rightX, 10*rectXY.bottomY] 
+                print(xy)
+               # img = PhotoImage(file="z.png")
+                canvas_1.create_image(10*rectXY.leftX,10*rectXY.topY, anchor=NW, image=img)
+                canvas_1.create_arc(xy, start=0, extent=359.999999999,fill = "yellow",outline = "yellow",activefill = "orange",activeoutline = "orange", activewidth = 15)
+    for each in nameTextObjects:
+        canvas_1.tag_raise(each)
+
+                    
+    startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
+    destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
+
+    thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
+    thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
+    thread3 = threading.Thread(target = multi_thread_monitor,args = ())
+    thread1.start()
+    thread2.start()
+    thread3.start()
+    thread1.join()
+    thread2.join()
+    thread3.join()
+
+    print("finished")
+        
+    if not notReachable:
+        route = reconstruct_path(startingID,file,True,canvas_1) + reconstruct_path(destID,file,False,canvas_1)
+        print(route)
+            
+        for iter in range (0, len(route)-1):
+            canvas_1.create_line(10*pointIDToCoordPoint(route[iter]).x,10*pointIDToCoordPoint(route[iter]).y,10*pointIDToCoordPoint(route[iter+1]).x,10*pointIDToCoordPoint(route[iter+1]).y)
+            
+                                     
+        updated_map_data = map_data
+
+        for i in route:
+            updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
+        np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     else:
-        boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
+        print(errorMessage)
+    
+    x_anchor_start = 10*lonLatToCoordPoint(startingPoint).x
+    y_anchor_start = 10*lonLatToCoordPoint(startingPoint).y
+    x_anchor_end = 10*lonLatToCoordPoint(destinationPoint).x
+    y_anchor_end = 10*lonLatToCoordPoint(destinationPoint).y
 
-        global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
-        startingPoint.lon = startingLon
-        startingPoint.lat = startingLat
-        destinationPoint.lat = destLat
-        destinationPoint.lon = destLon
-        xDimension = _xDimension
-        yDimension = _yDimension
-        k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
-        k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
-        b1 = boundaries.leftLon
-        b2 = boundaries.topLat
+    xyS = [x_anchor_start, y_anchor_start] 
+    canvas_1.create_text(xyS, text="Starting Point") 
+    xyE = [x_anchor_end, y_anchor_end] 
+    canvas_1.create_text(xyE, text="Destination Point")
+    root.bind('<Motion>', motion)
+   # root.bind("<Button-1>", callback)
+    root.mainloop()
 
-        geoDataFile = open("NFZ data.txt","r")
-        rows = (row.strip().split() for row in geoDataFile)
-        geoData = [[]]
-
-        rowNum = 0
-        for eachline in rows:
-            geoData.append([])
-            geoData[rowNum].append(eachline[1])
-            geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
-            geoData[rowNum].append(eachline[2])
-            geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N",""))/10000
-            geoData[rowNum].append(eachline[3])
-            geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-"))/10000
-            rowNum = rowNum + 1
-
-        for eachLine in geoData:
-            if eachLine != []:
-                print(eachLine)
-                setUpMap(eachLine,map_data,boundaries)
-
-        
-        startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
-        destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
-
-        thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
-        thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
-        thread3 = threading.Thread(target = multi_thread_monitor,args = ())
-        thread1.start()
-        thread2.start()
-        thread3.start()
-        thread1.join()
-        thread2.join()
-        thread3.join()
-
-        print("finished")
-        
-        if not notReachable:
-            route = reconstruct_path(startingID,file,True) + reconstruct_path(destID,file,False)
-            updated_map_data = map_data
-
-            for i in route:
-                updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
-            np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
-        else:
-            print(errorMessage)
     file.close()
     pass
 
+
+
+
+
+#if __name__ == "__main__":
+#root = tk.Tk()
+#Example(root).pack(fill="both", expand=True)
+#root.mainloop()
+
+
+#app = Application()                       
+#app.master.title('Sample application')    
+#app.mainloop()       
+
 #def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
-find_path(100,100,-77.243164,42.749019,-80.275146,44.032225)
+startingLon = input("starting point longitude? ")
+startingLat = input("starting point latitude? ")
+destLon = input("destination point longitude? ")
+destLat = input("destination point latitude? ")
+
+#print(raw)
+#find_path(100,100,-76,46,-80,50)
+#find_path(100,100,-85,47,-90,52)
+#find_path(100,100,-79,43,-80,44)
+#-88,50,-92,53
+
+find_path(100,100,float(startingLon),float(startingLat),float(destLon),float(destLat))
