@@ -8,26 +8,45 @@ import _thread
 import threading
 import tkinter as tk
 from tkinter import *
+import datetime
+import responses
+from googlemaps import client as _client
+import googlemaps
+import requests
+
+#AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y
+
+#gmaps = googlemaps.Client(key='AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y')
+
+#responses.add(responses.GET,
+#                      'https://maps.googleapis.com/maps/api/elevation/json',
+#                      body='{"status":"OK","results":[]}',
+#                      status=200,
+#                      content_type='application/json')
+
+#results = gmaps.elevation((40.714728, -73.998672))
+#responses.add(responses.GET,
+#                      'https://maps.googleapis.com/maps/api/elevation/json',
+#                      body='{"status":"OK","results":[]}',
+#                      status=200,
+#                      content_type='application/json')
+
+#path = [(40, -73), (40, -73.01)]
+
+#results2 = gmaps.elevation_along_path(path, 3)
+
+#for each in results2:
+#    print(each)
+
+
+
+
+
+
 root = tk.Tk()
 canvas_1 = Canvas(root,width=1200,height = 1000,background = "white")
 
-route = []
-
-
-#canvas_1.create_line(10, 20, 50, 100) 
-#root.mainloop()
-
-
-
-#class Application(tk.Frame):              
-#    def __init__(self, master=None):
-#        tk.Frame.__init__(self, master)   
-#        self.grid()                       
-#        self.createWidgets()
-
-#    def createWidgets(self):
-#        self.quitButton = tk.Button(self, text='Quit', command=self.quit)            
-#        self.quitButton.grid()            
+route = []      
 
 EARTH_RADIUS = 6371
 k1 = 0
@@ -228,7 +247,7 @@ def callback(event):
 def motion(event):
     global canvas_1
     x, y = event.x, event.y
-    #canvas_1.create_oval([x-1,y-1,x+1,y+1])
+    #canvas_1.create_oval([x-1,y-1,x+1,y+1],fill="black")
     #print('{}, {}'.format(xToLon(x/10), yToLat(y/10)))
 
 def reconstruct_path(endPointID,file,needReverse,canvas):
@@ -251,7 +270,7 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
         for each in total_path:
             temp += 1
             coords = pointIDToCoordPoint(each)
-            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="red",outline = "red",activefill="green",activeoutline = "green", activewidth = 10)
+            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
             
             lonlat = coordPointToLonlat(coords)
             if temp % 5 == 0:
@@ -259,8 +278,6 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
                 canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
             file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
             
-    #xyS = [x_anchor_start, y_anchor_start] 
-    #canvas_1.create_text(xyS, text="Starting Point") 
     else:
         temp = 0
         global cameFromE
@@ -269,7 +286,7 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
             temp += 1
             currentID = cameFrom[currentID]
             coords = pointIDToCoordPoint(currentID)
-            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="red",outline = "red",activefill="green",activeoutline = "green", activewidth = 10 )
+            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10 )
             lonlat = coordPointToLonlat(coords)
             if temp % 5 == 0:
                 xyT = [coords.x*10+20,coords.y*10-1]
@@ -298,12 +315,6 @@ def aStar(startID,goalID,map_data,isStart):
 
     openSet = []  # IDs
     dicOpenSet = {} 
-    startX = pointIDToCoordPoint(startID).x
-    startY = pointIDToCoordPoint(startID).y
-    if float(map_data[startY][startX]) != 0.0:
-        notReachable = True
-        errorMessage = "starting point/destination point not reachable"
-        return 0
     openSet.append(startID)
     gScore = {}   # ID --> score
     fScore = {}
@@ -396,14 +407,14 @@ def get_boundaries(startingLon,startingLat,destLon,destLat):
     latDiff = math.fabs(startingLat-destLat)
     boundaries = rectBoundaries(0,0,0,0)
     if(lonDiff<latDiff):   # lat rules
-        boundaries.topLat = max(startingLat,destLat)+0.5
-        boundaries.bottomLat = min(startingLat,destLat)-0.5
+        boundaries.topLat = max(startingLat,destLat)+1
+        boundaries.bottomLat = min(startingLat,destLat)-1
         lonAverage = (startingLon+destLon)/2
         boundaries.leftLon = lonAverage-(latDiff+1)/2
         boundaries.rightLon = lonAverage+(latDiff+1)/2
     else:                   # lon rules
-        boundaries.leftLon = min(startingLon,destLon)-0.5
-        boundaries.rightLon = max(startingLon,destLon)+0.5          # ONLY works in Northern Hemisphere
+        boundaries.leftLon = min(startingLon,destLon)-1
+        boundaries.rightLon = max(startingLon,destLon)+1          # ONLY works in Northern Hemisphere
         latAverage = (startingLat+destLat)/2
         boundaries.topLat = latAverage + (lonDiff+1)/2
         boundaries.bottomLat = latAverage - (lonDiff+1)/2
@@ -501,11 +512,7 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
 
-    #print("Clean the map or draw a route")
-    #response = input("Clean the map or draw a route (1 or 2)")
 
-    #if(response == "1"):
-    #    np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
 
     boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
 
@@ -553,25 +560,36 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
             if rectXY != 0:
                 xy = [10*rectXY.leftX, 10*rectXY.topY, 10*rectXY.rightX, 10*rectXY.bottomY] 
                 print(xy)
-               # img = PhotoImage(file="z.png")
-                canvas_1.create_image(10*rectXY.leftX,10*rectXY.topY, anchor=NW, image=img)
-                canvas_1.create_arc(xy, start=0, extent=359.999999999,fill = "yellow",outline = "yellow",activefill = "orange",activeoutline = "orange", activewidth = 15)
+                img = PhotoImage(file="z.png")
+                #canvas_1.create_arc(xy, start=0, extent=359.999999999,fill = "red",outline = "yellow",activefill = "orange",activeoutline = "orange", activewidth = 15)
+                canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "red")
+                #canvas_1.create_image(10*rectXY.leftX,10*rectXY.topY, anchor=NW, image=img)
     for each in nameTextObjects:
         canvas_1.tag_raise(each)
 
                     
     startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
     destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
-
-    thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
-    thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
-    thread3 = threading.Thread(target = multi_thread_monitor,args = ())
-    thread1.start()
-    thread2.start()
-    thread3.start()
-    thread1.join()
-    thread2.join()
-    thread3.join()
+    startX = pointIDToCoordPoint(startingID).x
+    startY = pointIDToCoordPoint(startingID).y
+    destX = pointIDToCoordPoint(destID).x
+    destY = pointIDToCoordPoint(destID).y
+    if float(map_data[startY][startX]) != 0.0:
+        notReachable = True
+        errorMessage = "starting point not reachable"
+    elif float(map_data[destY][destX]) != 0.0:
+        notReachable = True
+        errorMessage = "destination point not reachable"
+    else:
+        thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
+        thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
+        thread3 = threading.Thread(target = multi_thread_monitor,args = ())
+        thread1.start()
+        thread2.start()
+        thread3.start()
+        thread1.join()
+        thread2.join()
+        thread3.join()
 
     print("finished")
         
@@ -580,9 +598,7 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         print(route)
             
         for iter in range (0, len(route)-1):
-            canvas_1.create_line(10*pointIDToCoordPoint(route[iter]).x,10*pointIDToCoordPoint(route[iter]).y,10*pointIDToCoordPoint(route[iter+1]).x,10*pointIDToCoordPoint(route[iter+1]).y)
-            
-                                     
+            canvas_1.create_line(10*pointIDToCoordPoint(route[iter]).x,10*pointIDToCoordPoint(route[iter]).y,10*pointIDToCoordPoint(route[iter+1]).x,10*pointIDToCoordPoint(route[iter+1]).y)                   
         updated_map_data = map_data
 
         for i in route:
@@ -590,17 +606,25 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     else:
         print(errorMessage)
-    
+
+    updated_map_data = map_data
+    updated_map_data[lonLatToCoordPoint(startingPoint).y][lonLatToCoordPoint(startingPoint).x] = 3
+    updated_map_data[lonLatToCoordPoint(destinationPoint).y][lonLatToCoordPoint(destinationPoint).x] = 3
+    np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
+
     x_anchor_start = 10*lonLatToCoordPoint(startingPoint).x
     y_anchor_start = 10*lonLatToCoordPoint(startingPoint).y
     x_anchor_end = 10*lonLatToCoordPoint(destinationPoint).x
     y_anchor_end = 10*lonLatToCoordPoint(destinationPoint).y
 
     xyS = [x_anchor_start, y_anchor_start] 
-    canvas_1.create_text(xyS, text="Starting Point") 
+    startOb = canvas_1.create_text(xyS, text="Starting Point") 
     xyE = [x_anchor_end, y_anchor_end] 
-    canvas_1.create_text(xyE, text="Destination Point")
+    destOb = canvas_1.create_text(xyE, text="Destination Point")
     root.bind('<Motion>', motion)
+    canvas_1.tag_raise(startOb)
+    canvas_1.tag_raise(destOb)
+
    # root.bind("<Button-1>", callback)
     root.mainloop()
 
@@ -621,16 +645,15 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
 #app.master.title('Sample application')    
 #app.mainloop()       
 
-#def find_path(_x,_y,startingLon,startingLat,destLon,destLat)
+
 startingLon = input("starting point longitude? ")
 startingLat = input("starting point latitude? ")
 destLon = input("destination point longitude? ")
 destLat = input("destination point latitude? ")
 
-#print(raw)
-#find_path(100,100,-76,46,-80,50)
+
 #find_path(100,100,-85,47,-90,52)
 #find_path(100,100,-79,43,-80,44)
-#-88,50,-92,53
+#-88,50,-92,54
 
 find_path(100,100,float(startingLon),float(startingLat),float(destLon),float(destLat))
