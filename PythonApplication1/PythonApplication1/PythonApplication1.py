@@ -62,6 +62,8 @@ closedSetE = []
 cameFromS = {}
 cameFromE = {}
 stop = False
+multithread = True
+found = False
 meetingPointID = 0
 class lonLat:
     def __init__(self, lon, lat):
@@ -110,18 +112,22 @@ def multi_thread_monitor():
     global notReachable
     global stop
     global meetingPointID
-    found = False
-
-    while not found and not notReachable:
-        for elem in closedSetE:
-            if notReachable:
-                break
-            if elem in closedSetS:
-                meetingPointID = elem
-                found = True
-                stop = True
-                continue
-    
+    global multithread
+    global found
+    if multithread:
+        while not found and not notReachable:
+            for elem in closedSetE:
+                if notReachable:
+                    break
+                if elem in closedSetS:
+                    meetingPointID = elem
+                    found = True
+                    stop = True
+                    continue
+    else:
+        while not found and not notReachable:
+            continue
+  
     return 0
 
 
@@ -254,7 +260,11 @@ def reconstruct_path(endPointID,needReverse,canvas):
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     total_path = []
-    currentID = meetingPointID
+    global multithread, destinationPoint
+    if multithread:
+        currentID = meetingPointID
+    else:
+        currentID = coordPointToPointID(lonLatToCoordPoint(destinationPoint))
     if needReverse:
         global cameFromS
         cameFrom = cameFromS
@@ -302,7 +312,7 @@ def reconstruct_path(endPointID,needReverse,canvas):
 
 def aStar(startID,goalID,map_data,isStart):
     
-    global closedSetE, closedSetS, cameFromE,cameFromS 
+    global closedSetE, closedSetS, cameFromE,cameFromS,multithread,found
     global notReachable, errorMessage
     if isStart:
         closedSet = closedSetS
@@ -332,8 +342,9 @@ def aStar(startID,goalID,map_data,isStart):
             return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
-        #if currentID == goalID:
-            
+        if multithread == False and currentID == goalID:
+            found = True
+            return 0
 
         openSet.remove(currentID)
         del dicOpenSet[currentID]
@@ -600,16 +611,27 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         notReachable = True
         errorMessage = "destination point not reachable"
     else:
-        
-        thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
-        thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
-        thread3 = threading.Thread(target = multi_thread_monitor,args = ())
-        thread1.start()
-        thread2.start()
-        thread3.start()
-        thread1.join()
-        thread2.join()
-        thread3.join()
+        distance = haversine(startingPoint,destinationPoint)
+        if distance > 15:
+            thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
+            thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
+            thread3 = threading.Thread(target = multi_thread_monitor,args = ())
+            thread1.start()
+            thread2.start()
+            thread3.start()
+            thread1.join()
+            thread2.join()
+            thread3.join()
+        else:
+            global multithread
+            multithread = False
+            thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
+            thread3 = threading.Thread(target = multi_thread_monitor,args = ())
+            thread1.start()
+            thread3.start()
+            thread1.join()
+            thread3.join()
+
     computeEnd = time.time()
 
     print("Total Computation Time = " + str(computeEnd - computeStart))
