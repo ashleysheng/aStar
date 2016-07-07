@@ -65,6 +65,7 @@ stop = False
 multithread = True
 found = False
 meetingPointID = 0
+UIZoomFactor = 10
 class lonLat:
     def __init__(self, lon, lat):
         self.lon = lon
@@ -256,7 +257,7 @@ def motion(event):
     #print('{}, {}'.format(xToLon(x/10), yToLat(y/10)))
 
 def reconstruct_path(endPointID,needReverse,canvas):
-    global canvas_1
+    global canvas_1,UIZoomFactor
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     total_path = []
@@ -279,11 +280,11 @@ def reconstruct_path(endPointID,needReverse,canvas):
         for each in total_path:
             temp += 1
             coords = pointIDToCoordPoint(each)
-            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
+            canvas.create_oval([coords.x*UIZoomFactor-3,coords.y*UIZoomFactor-3,coords.x*UIZoomFactor+3,coords.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
             
             lonlat = coordPointToLonlat(coords)
             if temp % 5 == 0:
-                xyT = [coords.x*10+20,coords.y*10-1] 
+                xyT = [coords.x*UIZoomFactor+20,coords.y*UIZoomFactor-1] 
                 canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
             #file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
         total_path.insert(0,endPointID)
@@ -295,10 +296,10 @@ def reconstruct_path(endPointID,needReverse,canvas):
             temp += 1
             currentID = cameFrom[currentID]
             coords = pointIDToCoordPoint(currentID)
-            canvas.create_oval([coords.x*10-3,coords.y*10-3,coords.x*10+3,coords.y*10+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10 )
+            canvas.create_oval([coords.x*UIZoomFactor-3,coords.y*UIZoomFactor-3,coords.x*UIZoomFactor+3,coords.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10 )
             lonlat = coordPointToLonlat(coords)
             if temp % 5 == 0:
-                xyT = [coords.x*10+20,coords.y*10-1]
+                xyT = [coords.x*UIZoomFactor+20,coords.y*UIZoomFactor-1]
                 canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
             #if currentID != endPointID:
             #    file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
@@ -528,29 +529,27 @@ def writeToFile(file,route):
     gmapfile.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
     return 0
 
-def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
+def find_path(startingLon,startingLat,destLon,destLat,distance):
     loadStart = time.time()
-    global root
-    #Example(root).pack(fill="both",expand = True)
-    #root.mainloop()
-    global canvas_1
-   # canvas_1 = Canvas(root,width=1200,height = 1000)
+    global root,UIZoomFactor,canvas_1,multithread,notReachable,route
+    global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
     canvas_1.grid(row = 0,column = 1)
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
-    global notReachable,route
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
-
     boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
-
-    global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
     startingPoint.lon = startingLon
     startingPoint.lat = startingLat
     destinationPoint.lat = destLat
     destinationPoint.lon = destLon
-    xDimension = _xDimension
-    yDimension = _yDimension
+    if distance <10:
+        xDimension=200
+        yDimension=200
+        UIZoomFactor = 5
+    else:
+        xDimension = 120
+        yDimension = 120
     k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
     k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
     b1 = boundaries.leftLon
@@ -574,28 +573,28 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         for counter in range (4,len(eachline)):
             name += eachline[counter]
             name += " "
-        xyText = [10*lonToX(geoData[rowNum][2]),10*latToY(geoData[rowNum][1])+20] 
+        xyText = [UIZoomFactor*lonToX(geoData[rowNum][2]),UIZoomFactor*latToY(geoData[rowNum][1])+20] 
         nameObject = canvas_1.create_text(xyText, text=name)
         nameTextObjects.append(nameObject)
         rowNum = rowNum + 1
 
-    img = PhotoImage(file="d.png")
+    #img = PhotoImage(file="d.png")
 
     for eachLine in geoData:
         if eachLine != []:
             rectXY = setUpMap(eachLine,map_data,boundaries)
             if rectXY != 0:
-                xy = [10*rectXY.leftX+4, 10*rectXY.topY+4, 10*rectXY.rightX-4, 10*rectXY.bottomY-4] 
-                img = PhotoImage(file="z.png")
+                xy = [UIZoomFactor*rectXY.leftX+4, UIZoomFactor*rectXY.topY+4, UIZoomFactor*rectXY.rightX-4, UIZoomFactor*rectXY.bottomY-4] 
+                #img = PhotoImage(file="z.png")
                 #canvas_1.create_arc(xy, start=0, extent=359.999999999,fill = "red",outline = "yellow",activefill = "orange",activeoutline = "orange", activewidth = 15)
                 canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
-                #canvas_1.create_image(10*rectXY.leftX,10*rectXY.topY, anchor=NW, image=img)
+                #canvas_1.create_image(UIZoomFactor*rectXY.leftX,UIZoomFactor*rectXY.topY, anchor=NW, image=img)
     for each in nameTextObjects:
         canvas_1.tag_raise(each)
 
                     
-    startingID = coordPointToPointID(lonLatToCoordPoint(lonLat(startingLon,startingLat)))
-    destID = coordPointToPointID(lonLatToCoordPoint(lonLat(destLon,destLat)))
+    startingID = coordPointToPointID(lonLatToCoordPoint(startingPoint))
+    destID = coordPointToPointID(lonLatToCoordPoint(destinationPoint))
     startX = pointIDToCoordPoint(startingID).x
     startY = pointIDToCoordPoint(startingID).y
     destX = pointIDToCoordPoint(destID).x
@@ -611,7 +610,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         notReachable = True
         errorMessage = "destination point not reachable"
     else:
-        distance = haversine(startingPoint,destinationPoint)
         if distance > 15:
             thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
             thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
@@ -623,7 +621,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
             thread2.join()
             thread3.join()
         else:
-            global multithread
             multithread = False
             thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
             thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -638,16 +635,22 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
    
     print("Total Time = " + str(loadEnd-loadStart+computeEnd-computeStart))
     if not notReachable:
-        route = reconstruct_path(startingID,True,canvas_1) + reconstruct_path(destID,False,canvas_1)
+        if multithread:
+            route = reconstruct_path(startingID,True,canvas_1) + reconstruct_path(destID,False,canvas_1)
+        else:
+            route = reconstruct_path(startingID,True,canvas_1)
         #print(route)
         writeToFile(file,route)
-        totalDis = 0
+        totalDis = haversine(startingPoint,coordPointToLonlat(pointIDToCoordPoint(route[0])))
         for iter in range (0, len(route)-1):
             currCoordPoint = pointIDToCoordPoint(route[iter])
             nextCoordPoint = pointIDToCoordPoint(route[iter+1])
-            canvas_1.create_line(10*currCoordPoint.x,10*currCoordPoint.y,10*nextCoordPoint.x,10*nextCoordPoint.y)
+            canvas_1.create_line(UIZoomFactor*currCoordPoint.x,UIZoomFactor*currCoordPoint.y,UIZoomFactor*nextCoordPoint.x,UIZoomFactor*nextCoordPoint.y)
             totalDis = totalDis + haversine(coordPointToLonlat(currCoordPoint),coordPointToLonlat(nextCoordPoint))
+        
+        totalDis = totalDis + haversine(coordPointToLonlat(pointIDToCoordPoint(route[len(route)-1])),destinationPoint)
         file.write("Total Distance  = "+str(totalDis)+" KM")   
+        #print("Straight line Distance = " + str(haversine(startingPoint,destinationPoint))+" KM")
         print("Total Distance  = "+str(totalDis)+" KM")                    
         updated_map_data = map_data
 
@@ -657,15 +660,10 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     else:
         print(errorMessage)
 
-    updated_map_data = map_data
-    updated_map_data[lonLatToCoordPoint(startingPoint).y][lonLatToCoordPoint(startingPoint).x] = 3
-    updated_map_data[lonLatToCoordPoint(destinationPoint).y][lonLatToCoordPoint(destinationPoint).x] = 3
-    np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
-
-    x_anchor_start = 10*lonLatToCoordPoint(startingPoint).x
-    y_anchor_start = 10*lonLatToCoordPoint(startingPoint).y
-    x_anchor_end = 10*lonLatToCoordPoint(destinationPoint).x
-    y_anchor_end = 10*lonLatToCoordPoint(destinationPoint).y
+    x_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).x
+    y_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).y
+    x_anchor_end = UIZoomFactor*lonLatToCoordPoint(destinationPoint).x
+    y_anchor_end = UIZoomFactor*lonLatToCoordPoint(destinationPoint).y
 
     xyS = [x_anchor_start, y_anchor_start] 
     startOb = canvas_1.create_text(xyS, text="Starting Point") 
@@ -683,7 +681,191 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
 
 
 
+def find_path_main(startingLon,startingLat,destLon,destLat):
+    global k1, k2, b1, b2, xDimension, yDimension
+    global startingPoint, destinationPoint,notReachable
+    startingPoint.lon = startingLon
+    startingPoint.lat = startingLat
+    destinationPoint.lat = destLat
+    destinationPoint.lon = destLon
+    distance = haversine(startingPoint,destinationPoint)
+    #print(distance)
+    if distance <= 15:
+        loadStart = time.time()
+        global root,UIZoomFactor,canvas_1,route
+        canvas_1.grid(row = 0,column = 1)
+        # xf = k1 * xi + b1
+        # yf = k2 * yi + b2
+        file = open("newfile.txt", "w")
+        map_data = genfromtxt('map_data.csv', delimiter=',')
+        boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
 
+        if distance <10:
+            xDimension=200
+            yDimension=200
+            UIZoomFactor = 5
+        else:
+            xDimension = 120
+            yDimension = 120
+        k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
+        k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
+        b1 = boundaries.leftLon
+        b2 = boundaries.topLat
+
+        geoDataFile = open("NFZ data.txt","r")
+        rows = (row.strip().split() for row in geoDataFile)
+        geoData = [[]]
+
+        rowNum = 0
+        nameTextObjects = []
+        for eachline in rows:
+            geoData.append([])
+            geoData[rowNum].append(eachline[1])
+            geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
+            geoData[rowNum].append(eachline[2])
+            geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N","")) #lat
+            geoData[rowNum].append(eachline[3])
+            geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-")) # lon
+            name = ""
+            for counter in range (4,len(eachline)):
+                name += eachline[counter]
+                name += " "
+            xyText = [UIZoomFactor*lonToX(geoData[rowNum][2]),UIZoomFactor*latToY(geoData[rowNum][1])+20] 
+            nameObject = canvas_1.create_text(xyText, text=name)
+            nameTextObjects.append(nameObject)
+            rowNum = rowNum + 1
+
+        #img = PhotoImage(file="d.png")
+
+        for eachLine in geoData:
+            if eachLine != []:
+
+                rectXY = setUpMap(eachLine,map_data,boundaries)
+                if rectXY != 0:
+                    xy = [UIZoomFactor*rectXY.leftX+4, UIZoomFactor*rectXY.topY+4, UIZoomFactor*rectXY.rightX-4, UIZoomFactor*rectXY.bottomY-4] 
+                    canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
+        for each in nameTextObjects:
+            canvas_1.tag_raise(each)
+
+                    
+        #startingID = coordPointToPointID(lonLatToCoordPoint(startingPoint))
+        #destID = coordPointToPointID(lonLatToCoordPoint(destinationPoint))
+        #startX = pointIDToCoordPoint(startingID).x
+        #startY = pointIDToCoordPoint(startingID).y
+        #destX = pointIDToCoordPoint(destID).x
+        #destY = pointIDToCoordPoint(destID).y
+
+        loadEnd = time.time()
+        print("Total Load Time = " + str(loadEnd - loadStart))
+
+        computeStart = time.time()
+        #if float(map_data[startY][startX]) != 0.0:
+        #    notReachable = True
+        #    errorMessage = "starting point not reachable"
+        #elif float(map_data[destY][destX]) != 0.0:
+        #    notReachable = True
+        #    errorMessage = "destination point not reachable"
+        
+        # check if starting/ending points are in the NFZ
+        for each in geoData:
+            if each != []:
+                distFromStart = haversine(startingPoint,lonLat(each[2],each[1]))
+                if distFromStart <= float(each[0]):
+                    notReachable = True
+                    print("starting not reachable") 
+                    break
+                distFromEnd = haversine(destinationPoint,lonLat(each[2],each[1]))
+                if distFromEnd <= float(each[0]):
+                    notReachable = True
+                    print("ending not reachable") 
+                    break
+        if notReachable:
+            pass
+        else:
+            gmapfile = open("gmapfile.txt", "w")
+            index = 0
+            file.write(str(index)+"   "+str(startingPoint.lon)+"   "+str(startingPoint.lat)+"   "+"0"+"\n")
+            gmapfile.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
+            numOfSubPoints = haversine(startingPoint,destinationPoint) / 0.1
+            straightline = True
+            for i in range (1,int(numOfSubPoints)+1):
+                if straightline:
+                    newLonLat = lonLat((numOfSubPoints-i)/numOfSubPoints*startingPoint.lon+i/numOfSubPoints*destinationPoint.lon,(numOfSubPoints-i)/numOfSubPoints*startingPoint.lat+i/numOfSubPoints*destinationPoint.lat)
+                    for each in geoData:
+                        if each != []:
+                            dist = haversine(newLonLat,lonLat(each[2],each[1]))
+                            if dist <= float(each[0]):
+                                  print("not a straight line")
+                                  straightline = False
+                                  break
+                    if not straightline:
+                        break
+                    index += 1
+                    file.write(str(index)+"   "+str(newLonLat.lon)+"   "+str(newLonLat.lat)+"   "+"300"+"\n")
+                    gmapfile.write(str(newLonLat.lon)+","+str(newLonLat.lat)+"\n")
+            
+            if straightline:
+                    file.write(str(index)+"   "+str(destinationPoint.lon)+"   "+str(destinationPoint.lat)+"   "+"0"+"\n")
+                    gmapfile.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
+                    computeEnd = time.time()
+                    print("Total Computation Time = " + str(computeEnd - computeStart))
+                    print("Total Time = " + str(loadEnd-loadStart+computeEnd-computeStart))
+                    totalDis = haversine(startingPoint,destinationPoint)
+                    startCoordPoint = lonLatToCoordPoint(startingPoint)
+                    endCoordPoint = lonLatToCoordPoint(destinationPoint)
+                    canvas_1.create_line(UIZoomFactor*startCoordPoint.x,UIZoomFactor*startCoordPoint.y,UIZoomFactor*endCoordPoint.x,UIZoomFactor*endCoordPoint.y)
+                    canvas_1.create_oval([startCoordPoint.x*UIZoomFactor-3,startCoordPoint.y*UIZoomFactor-3,startCoordPoint.x*UIZoomFactor+3,startCoordPoint.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
+                    canvas_1.create_oval([endCoordPoint.x*UIZoomFactor-3,endCoordPoint.y*UIZoomFactor-3,endCoordPoint.x*UIZoomFactor+3,endCoordPoint.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
+
+                    file.write("Total Distance  = "+str(totalDis)+" KM")   
+                   # print("Straight line Distance = " + str(totalDis)+" KM")
+                    print("Total Distance  = "+str(totalDis)+" KM")                    
+            else:
+                find_path(startingLon,startingLat,destLon,destLat,distance)
+
+       # if not notReachable:
+       #     totalDis = haversine(startingPoint,coordPointToLonlat(pointIDToCoordPoint(route[0])))
+       #     for iter in range (0, len(route)-1):
+       #         currCoordPoint = pointIDToCoordPoint(route[iter])
+       #         nextCoordPoint = pointIDToCoordPoint(route[iter+1])
+       #         canvas_1.create_line(UIZoomFactor*currCoordPoint.x,UIZoomFactor*currCoordPoint.y,UIZoomFactor*nextCoordPoint.x,UIZoomFactor*nextCoordPoint.y)
+       #         totalDis = totalDis + haversine(coordPointToLonlat(currCoordPoint),coordPointToLonlat(nextCoordPoint))
+        
+       #     totalDis = totalDis + haversine(coordPointToLonlat(pointIDToCoordPoint(route[len(route)-1])),destinationPoint)
+       #     file.write("Total Distance  = "+str(totalDis)+" KM")   
+       #     print("Straight line Distance = " + str(haversine(startingPoint,destinationPoint))+" KM")
+       #     print("Total Distance  = "+str(totalDis)+" KM")                    
+       #     updated_map_data = map_data
+
+       #     for i in route:
+       #         updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
+       #     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
+       # else:
+       #     print(errorMessage)
+
+       # x_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).x
+       # y_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).y
+       # x_anchor_end = UIZoomFactor*lonLatToCoordPoint(destinationPoint).x
+       # y_anchor_end = UIZoomFactor*lonLatToCoordPoint(destinationPoint).y
+
+       # xyS = [x_anchor_start, y_anchor_start] 
+       # startOb = canvas_1.create_text(xyS, text="Starting Point") 
+       # xyE = [x_anchor_end, y_anchor_end] 
+       # destOb = canvas_1.create_text(xyE, text="Destination Point")
+       # root.bind('<Motion>', motion)
+       # canvas_1.tag_raise(startOb)
+       # canvas_1.tag_raise(destOb)
+
+       ## root.bind("<Button-1>", callback)
+        root.mainloop()
+
+        file.close()
+    
+    
+    
+    
+    else:
+        find_path(startingLon,startingLat,destLon,destLat,distance)
 
 #if __name__ == "__main__":
 #root = tk.Tk()
@@ -700,6 +882,5 @@ startingLon = input("starting point longitude? ")
 startingLat = input("starting point latitude? ")
 destLon = input("destination point longitude? ")
 destLat = input("destination point latitude? ")
+find_path_main(float(startingLon),float(startingLat),float(destLon),float(destLat))
 
-find_path(120,120,float(startingLon),float(startingLat),float(destLon),float(destLat))
-#find_path(100,100,-80.132752,43.154955 , -79.009258,43.8572)
