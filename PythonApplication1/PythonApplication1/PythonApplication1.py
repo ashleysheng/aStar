@@ -103,7 +103,6 @@ class GraphicObject(object):
 
 
 def multi_thread_monitor():
-    start = time.time()
     global closedSetS
     global closedSetE
     global cameFromE
@@ -250,7 +249,7 @@ def motion(event):
     #canvas_1.create_oval([x-1,y-1,x+1,y+1],fill="black")
     #print('{}, {}'.format(xToLon(x/10), yToLat(y/10)))
 
-def reconstruct_path(endPointID,file,needReverse,canvas):
+def reconstruct_path(endPointID,needReverse,canvas):
     global canvas_1
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
@@ -265,7 +264,7 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
             total_path.append(currentID)
         total_path.reverse()
         total_path.remove(endPointID)
-        file.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
+        #file.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
         temp = 0
         for each in total_path:
             temp += 1
@@ -276,8 +275,8 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
             if temp % 5 == 0:
                 xyT = [coords.x*10+20,coords.y*10-1] 
                 canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
-            file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
-            
+            #file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
+        total_path.insert(0,endPointID)
     else:
         temp = 0
         global cameFromE
@@ -291,10 +290,10 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
             if temp % 5 == 0:
                 xyT = [coords.x*10+20,coords.y*10-1]
                 canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
-            if currentID != endPointID:
-                file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
-            else:
-                file.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
+            #if currentID != endPointID:
+            #    file.write(str(lonlat.lon)+","+str(lonlat.lat)+"\n")
+            #else:
+            #    file.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
             total_path.append(currentID)
 
     return total_path
@@ -303,7 +302,6 @@ def reconstruct_path(endPointID,file,needReverse,canvas):
 
 def aStar(startID,goalID,map_data,isStart):
     
-    start = time.time()
     global closedSetE, closedSetS, cameFromE,cameFromS 
     global notReachable, errorMessage
     if isStart:
@@ -334,10 +332,8 @@ def aStar(startID,goalID,map_data,isStart):
             return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
    
-        if currentID == goalID:
-            end = time.time()
-            print("Total Time", end= " ")
-            print( end - start)
+        #if currentID == goalID:
+            
 
         openSet.remove(currentID)
         del dicOpenSet[currentID]
@@ -480,10 +476,7 @@ def setUpMap(line,map_data, boundaries):
     rightX = lonToX(rightZoneLon)
     leftX = lonToX(leftZoneLon)
 
-    print(topY)
-    print(bottomY)
-    print(rightX)
-    print(leftX)
+
 
     updated_map_data = map_data
 
@@ -498,8 +491,34 @@ def setUpMap(line,map_data, boundaries):
     
     return rectBoundariesInXY(leftX,rightX,topY,bottomY)
 
+
+
+def writeToFile(file,route):
+    gmapfile = open("gmapfile.txt", "w")
+    index = 0
+    file.write(str(index)+"   "+str(startingPoint.lon)+"   "+str(startingPoint.lat)+"   "+"0"+"\n")
+    gmapfile.write(str(startingPoint.lon)+","+str(startingPoint.lat)+"\n")
+    previousLonLat = startingPoint
+    for each in route:
+        
+        coords = pointIDToCoordPoint(each)
+        currlonlat = coordPointToLonlat(coords)
+        numOfSubPoints = haversine(previousLonLat,currlonlat) / 0.1
+        for i in range (1,int(numOfSubPoints)+1):
+            #newLonLat = ((numOfSubPoints-i)*previousLonLat + i*currlonlat)/numOfSubPoints 
+            newLonLat = lonLat((numOfSubPoints-i)/numOfSubPoints*previousLonLat.lon+i/numOfSubPoints*currlonlat.lon,(numOfSubPoints-i)/numOfSubPoints*previousLonLat.lat+i/numOfSubPoints*currlonlat.lat)
+            index += 1
+            file.write(str(index)+"   "+str(newLonLat.lon)+"   "+str(newLonLat.lat)+"   "+"300"+"\n")
+            gmapfile.write(str(newLonLat.lon)+","+str(newLonLat.lat)+"\n")
+
+        previousLonLat = currlonlat
+    index += 1
+    file.write(str(index)+"   "+str(destinationPoint.lon)+"   "+str(destinationPoint.lat)+"   "+"0"+"\n")
+    gmapfile.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
+    return 0
+
 def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat):
-    
+    loadStart = time.time()
     global root
     #Example(root).pack(fill="both",expand = True)
     #root.mainloop()
@@ -511,8 +530,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     global notReachable,route
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
-
-
 
     boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
 
@@ -536,7 +553,6 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     nameTextObjects = []
     for eachline in rows:
         geoData.append([])
-        print(eachline)
         geoData[rowNum].append(eachline[1])
         geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
         geoData[rowNum].append(eachline[2])
@@ -558,11 +574,10 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         if eachLine != []:
             rectXY = setUpMap(eachLine,map_data,boundaries)
             if rectXY != 0:
-                xy = [10*rectXY.leftX, 10*rectXY.topY, 10*rectXY.rightX, 10*rectXY.bottomY] 
-                print(xy)
+                xy = [10*rectXY.leftX+4, 10*rectXY.topY+4, 10*rectXY.rightX-4, 10*rectXY.bottomY-4] 
                 img = PhotoImage(file="z.png")
                 #canvas_1.create_arc(xy, start=0, extent=359.999999999,fill = "red",outline = "yellow",activefill = "orange",activeoutline = "orange", activewidth = 15)
-                canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "red")
+                canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
                 #canvas_1.create_image(10*rectXY.leftX,10*rectXY.topY, anchor=NW, image=img)
     for each in nameTextObjects:
         canvas_1.tag_raise(each)
@@ -574,6 +589,10 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
     startY = pointIDToCoordPoint(startingID).y
     destX = pointIDToCoordPoint(destID).x
     destY = pointIDToCoordPoint(destID).y
+    loadEnd = time.time()
+    print("Total Load Time = " + str(loadEnd - loadStart))
+
+    computeStart = time.time()
     if float(map_data[startY][startX]) != 0.0:
         notReachable = True
         errorMessage = "starting point not reachable"
@@ -581,6 +600,7 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         notReachable = True
         errorMessage = "destination point not reachable"
     else:
+        
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -590,15 +610,23 @@ def find_path(_xDimension, _yDimension, startingLon,startingLat,destLon,destLat)
         thread1.join()
         thread2.join()
         thread3.join()
+    computeEnd = time.time()
 
-    print("finished")
-        
+    print("Total Computation Time = " + str(computeEnd - computeStart))
+   
+    print("Total Time = " + str(loadEnd-loadStart+computeEnd-computeStart))
     if not notReachable:
-        route = reconstruct_path(startingID,file,True,canvas_1) + reconstruct_path(destID,file,False,canvas_1)
-        print(route)
-            
+        route = reconstruct_path(startingID,True,canvas_1) + reconstruct_path(destID,False,canvas_1)
+        #print(route)
+        writeToFile(file,route)
+        totalDis = 0
         for iter in range (0, len(route)-1):
-            canvas_1.create_line(10*pointIDToCoordPoint(route[iter]).x,10*pointIDToCoordPoint(route[iter]).y,10*pointIDToCoordPoint(route[iter+1]).x,10*pointIDToCoordPoint(route[iter+1]).y)                   
+            currCoordPoint = pointIDToCoordPoint(route[iter])
+            nextCoordPoint = pointIDToCoordPoint(route[iter+1])
+            canvas_1.create_line(10*currCoordPoint.x,10*currCoordPoint.y,10*nextCoordPoint.x,10*nextCoordPoint.y)
+            totalDis = totalDis + haversine(coordPointToLonlat(currCoordPoint),coordPointToLonlat(nextCoordPoint))
+        file.write("Total Distance  = "+str(totalDis)+" KM")   
+        print("Total Distance  = "+str(totalDis)+" KM")                    
         updated_map_data = map_data
 
         for i in route:
@@ -651,9 +679,5 @@ startingLat = input("starting point latitude? ")
 destLon = input("destination point longitude? ")
 destLat = input("destination point latitude? ")
 
-
-#find_path(100,100,-85,47,-90,52)
-#find_path(100,100,-79,43,-80,44)
-#-88,50,-92,54
-
-find_path(100,100,float(startingLon),float(startingLat),float(destLon),float(destLat))
+find_path(120,120,float(startingLon),float(startingLat),float(destLon),float(destLat))
+#find_path(100,100,-80.132752,43.154955 , -79.009258,43.8572)
