@@ -13,6 +13,8 @@ import responses
 from googlemaps import client as _client
 import googlemaps
 import requests
+import decimal 
+
 
 #AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y
 
@@ -44,7 +46,7 @@ import requests
 
 
 root = tk.Tk()
-canvas_1 = Canvas(root,width=1200,height = 1000,background = "white")
+canvas_1 = Canvas(root,width=1200,height = 800,background = "white")
 
 route = []      
 
@@ -65,7 +67,7 @@ stop = False
 multithread = True
 found = False
 meetingPointID = 0
-UIZoomFactor = 10
+UIZoomFactor = 8
 loadStart = 0.0
 class lonLat:
     def __init__(self, lon, lat):
@@ -664,6 +666,12 @@ def find_path(distance,boundaries):
     pass
 
 
+def helloCallBack(lonS,latS,lonE,latE, alt):
+    if math.fabs((decimal.Decimal(lonS)).as_tuple().exponent) < 14 or math.fabs((decimal.Decimal(latS)).as_tuple().exponent) < 14 or math.fabs((decimal.Decimal(lonE)).as_tuple().exponent) < 14 or math.fabs((decimal.Decimal(lonE)).as_tuple().exponent) < 14 or math.fabs((decimal.Decimal(alt)).as_tuple().exponent) < 14:
+        print("one of the box does not havew enough decimal places")
+    
+
+
 
 def find_path_main(startingLon,startingLat,destLon,destLat):
     loadStart = time.time()
@@ -681,12 +689,41 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
     else:
         xDimension = 120
         yDimension = 120
+        
+
+    boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
     k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
     k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
     b1 = boundaries.leftLon
     b2 = boundaries.topLat
-    canvas_1.grid(row = 0,column = 1)
-    boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
+    canvas_1.grid(row = 0,column = 0,columnspan = 50, rowspan = 3 )
+    InputAl = Label(root, text="Starting Longtitude", bg="Red", height=2)
+    InputAl.grid(row=3, column=0)
+    InputA = Entry(root,width = 12)
+    InputA.grid(row =3, column =1) 
+
+    InputAl2 = Label(root, text="Starting Latitude", bg="Red", height=2)
+    InputAl2.grid(row=3, column=2)
+    InputA2 = Entry(root,width = 12)
+    InputA2.grid(row =3, column =3)
+
+    InputBl = Label(root, text="Destination Longtitude", bg="Blue", height=2)
+    InputBl.grid(row=3, column=4)
+    InputB = Entry(root,width = 12)
+    InputB.grid(row =3, column =5) 
+
+    InputBl2 = Label(root, text="Destination Latitude", bg="Blue", height=2)
+    InputBl2.grid(row=3, column=6)
+    InputB2 = Entry(root,width = 12)
+    InputB2.grid(row =3, column =7) 
+
+    InputC = Label(root, text="Altitude", bg="Green", height=2)
+    InputC.grid(row=3, column=8)
+    InputC1 = Entry(root,width = 12)
+    InputC1.grid(row =3, column =9)
+    
+    B = Button(root, text ="Hello", command = lambda:helloCallBack(InputA.get(),InputA2.get(),InputB.get(),InputB2.get(), InputC1.get()))
+    B.grid(row = 3, column = 10)
 
 
     if distance <= 15:
@@ -857,9 +894,9 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
 #app.mainloop()       
 
 
-startingLon = input("starting point longitude? ")
-startingLat = input("starting point latitude? ")
-destLon = input("destination point longitude? ")
-destLat = input("destination point latitude? ")
-find_path_main(float(startingLon),float(startingLat),float(destLon),float(destLat))
-
+#startingLon = input("starting point longitude? ")
+#startingLat = input("starting point latitude? ")
+#destLon = input("destination point longitude? ")
+#destLat = input("destination point latitude? ")
+#find_path_main(float(startingLon),float(startingLat),float(destLon),float(destLat))
+find_path_main(-79.919225,43.260879,-79.113683,44.109265)
