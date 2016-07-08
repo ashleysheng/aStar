@@ -66,6 +66,7 @@ multithread = True
 found = False
 meetingPointID = 0
 UIZoomFactor = 10
+loadStart = 0.0
 class lonLat:
     def __init__(self, lon, lat):
         self.lon = lon
@@ -529,32 +530,15 @@ def writeToFile(file,route):
     gmapfile.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
     return 0
 
-def find_path(startingLon,startingLat,destLon,destLat,distance):
-    loadStart = time.time()
-    global root,UIZoomFactor,canvas_1,multithread,notReachable,route
+
+def find_path(distance,boundaries):
+    global root,UIZoomFactor,canvas_1,multithread,notReachable,route,loadStart
     global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
-    canvas_1.grid(row = 0,column = 1)
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     file = open("newfile.txt", "w")
     map_data = genfromtxt('map_data.csv', delimiter=',')
-    boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
-    startingPoint.lon = startingLon
-    startingPoint.lat = startingLat
-    destinationPoint.lat = destLat
-    destinationPoint.lon = destLon
-    if distance <10:
-        xDimension=200
-        yDimension=200
-        UIZoomFactor = 5
-    else:
-        xDimension = 120
-        yDimension = 120
-    k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
-    k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
-    b1 = boundaries.leftLon
-    b2 = boundaries.topLat
-
+   
     geoDataFile = open("NFZ data.txt","r")
     rows = (row.strip().split() for row in geoDataFile)
     geoData = [[]]
@@ -682,40 +666,38 @@ def find_path(startingLon,startingLat,destLon,destLat,distance):
 
 
 def find_path_main(startingLon,startingLat,destLon,destLat):
-    global k1, k2, b1, b2, xDimension, yDimension
+    loadStart = time.time()
+    global k1, k2, b1, b2, xDimension, yDimension, root,UIZoomFactor,canvas_1,route
     global startingPoint, destinationPoint,notReachable
     startingPoint.lon = startingLon
     startingPoint.lat = startingLat
     destinationPoint.lat = destLat
     destinationPoint.lon = destLon
     distance = haversine(startingPoint,destinationPoint)
-    #print(distance)
+    if distance <15:
+        xDimension=200
+        yDimension=200
+        UIZoomFactor = 5
+    else:
+        xDimension = 120
+        yDimension = 120
+    k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
+    k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
+    b1 = boundaries.leftLon
+    b2 = boundaries.topLat
+    canvas_1.grid(row = 0,column = 1)
+    boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
+
+
     if distance <= 15:
-        loadStart = time.time()
-        global root,UIZoomFactor,canvas_1,route
-        canvas_1.grid(row = 0,column = 1)
         # xf = k1 * xi + b1
         # yf = k2 * yi + b2
+
         file = open("newfile.txt", "w")
         map_data = genfromtxt('map_data.csv', delimiter=',')
-        boundaries = get_boundaries(startingLon,startingLat,destLon,destLat)
-
-        if distance <10:
-            xDimension=200
-            yDimension=200
-            UIZoomFactor = 5
-        else:
-            xDimension = 120
-            yDimension = 120
-        k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
-        k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
-        b1 = boundaries.leftLon
-        b2 = boundaries.topLat
-
         geoDataFile = open("NFZ data.txt","r")
         rows = (row.strip().split() for row in geoDataFile)
         geoData = [[]]
-
         rowNum = 0
         nameTextObjects = []
         for eachline in rows:
@@ -734,8 +716,6 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
             nameObject = canvas_1.create_text(xyText, text=name)
             nameTextObjects.append(nameObject)
             rowNum = rowNum + 1
-
-        #img = PhotoImage(file="d.png")
 
         for eachLine in geoData:
             if eachLine != []:
@@ -772,15 +752,15 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
                 distFromStart = haversine(startingPoint,lonLat(each[2],each[1]))
                 if distFromStart <= float(each[0]):
                     notReachable = True
-                    print("starting not reachable") 
+                    errorMessage = "starting not reachable"
                     break
                 distFromEnd = haversine(destinationPoint,lonLat(each[2],each[1]))
                 if distFromEnd <= float(each[0]):
                     notReachable = True
-                    print("ending not reachable") 
+                    errorMessage = "ending not reachable"
                     break
         if notReachable:
-            pass
+            print(errorMessage)
         else:
             gmapfile = open("gmapfile.txt", "w")
             index = 0
@@ -821,7 +801,7 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
                    # print("Straight line Distance = " + str(totalDis)+" KM")
                     print("Total Distance  = "+str(totalDis)+" KM")                    
             else:
-                find_path(startingLon,startingLat,destLon,destLat,distance)
+                find_path(distance,boundaries)
 
        # if not notReachable:
        #     totalDis = haversine(startingPoint,coordPointToLonlat(pointIDToCoordPoint(route[0])))
@@ -856,7 +836,6 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
        # canvas_1.tag_raise(startOb)
        # canvas_1.tag_raise(destOb)
 
-       ## root.bind("<Button-1>", callback)
         root.mainloop()
 
         file.close()
@@ -865,7 +844,7 @@ def find_path_main(startingLon,startingLat,destLon,destLat):
     
     
     else:
-        find_path(startingLon,startingLat,destLon,destLat,distance)
+        find_path(distance,boundaries)
 
 #if __name__ == "__main__":
 #root = tk.Tk()
