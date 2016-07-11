@@ -18,17 +18,19 @@ import requests
 import decimal 
 from decimal import *
 
+
 #AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y
+startingPointElevation = 0
+gmaps = googlemaps.Client(key='AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y')
 
-#gmaps = googlemaps.Client(key='AIzaSyCCA_5XGYNHD3JJLKOK8TEd8IYGjYZD-6Y')
+responses.add(responses.GET,
+                      'https://maps.googleapis.com/maps/api/elevation/json',
+                      body='{"status":"OK","results":[]}',
+                      status=200,
+                      content_type='application/json')
 
-#responses.add(responses.GET,
-#                      'https://maps.googleapis.com/maps/api/elevation/json',
-#                      body='{"status":"OK","results":[]}',
-#                      status=200,
-#                      content_type='application/json')
-
-#results = gmaps.elevation((40.714728, -73.998672))
+results = gmaps.elevation((40.714728, -73.998672))
+print(results[0]['resolution'])
 #responses.add(responses.GET,
 #                      'https://maps.googleapis.com/maps/api/elevation/json',
 #                      body='{"status":"OK","results":[]}',
@@ -46,10 +48,17 @@ from decimal import *
 
 
 
-
 root = tk.Tk()
+
+import ttk
+
+progressbar = ttk.Progressbar(orient=HORIZONTAL, length=800, mode='determinate')
+progressbar.grid(row =4,column = 0,columnspan = 4)
+progressbar.start()
+
 root.wm_title("DDC Flight Path Finding")
-canvas_1 = Canvas(root,width=1000,height = 800,background = "white")
+canvas_1 = Canvas(width=1000,height = 800,background = "white")
+
 
 route = []      
 altitude = 300
@@ -72,7 +81,7 @@ found = False
 meetingPointID = 0
 UIZoomFactor = 8
 loadStart = 0.0
-
+fileName = "DDCRoute"
 
 
 class lonLat:
@@ -88,30 +97,7 @@ class coordPoint:
         
 startingPoint = lonLat(0,0)
 destinationPoint = lonLat(0,0)
-class Example(tk.Frame):
-    def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
-        self.canvas = tk.Canvas(self, width=400,  height=400, 
-                                background="bisque")
-        self.canvas.pack(fill="both", expand=True)
 
-        graphic1 = GraphicObject(10,10,100,100, name="graphic1")
-        graphic2 = GraphicObject(110,110,200,200, name="graphic2")
-
-        graphic1.draw(self.canvas)
-        graphic2.draw(self.canvas)
-
-class GraphicObject(object):
-    def __init__(self, x0,y0,x1,y1, name=None):
-        self.coords = (x0,y0,x1,y1)
-        self.name = name
-
-    def draw(self, canvas, outline="black", fill="white"):
-        item = canvas.create_oval(self.coords, outline=outline, fill=fill)
-        canvas.tag_bind(item, "<1>", self.mouse_click)
-
-    def mouse_click(self, event):
-        print ("I got a mouse click (%s)" % self.name)
 
 
 def multi_thread_monitor():
@@ -256,6 +242,7 @@ def yToLat(yValue):
 
 
 def reconstruct_path(endPointID,needReverse,canvas):
+    global startingPointElevation
     global canvas_1,UIZoomFactor
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
@@ -282,6 +269,9 @@ def reconstruct_path(endPointID,needReverse,canvas):
             canvas.create_oval([coords.x*UIZoomFactor-3,coords.y*UIZoomFactor-3,coords.x*UIZoomFactor+3,coords.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
             
             lonlat = coordPointToLonlat(coords)
+            results = gmaps.elevation((lonlat.lat, lonlat.lon))
+            print(results[0]['resolution']-startingPointElevation)
+
             #if temp % 5 == 0:
             #    xyT = [coords.x*UIZoomFactor+20,coords.y*UIZoomFactor-1] 
             #    canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
@@ -297,6 +287,11 @@ def reconstruct_path(endPointID,needReverse,canvas):
             coords = pointIDToCoordPoint(currentID)
             canvas.create_oval([coords.x*UIZoomFactor-3,coords.y*UIZoomFactor-3,coords.x*UIZoomFactor+3,coords.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10 )
             lonlat = coordPointToLonlat(coords)
+
+            
+            results = gmaps.elevation((lonlat.lat, lonlat.lon))
+            print(results[0]['resolution']-startingPointElevation)
+
             #if temp % 5 == 0:
             #    xyT = [coords.x*UIZoomFactor+20,coords.y*UIZoomFactor-1]
             #    canvas_1.create_text(xyT, text=str(lonlat.lon)+","+str(lonlat.lat))
@@ -414,14 +409,14 @@ def get_boundaries(startingLon,startingLat,destLon,destLat):
     latDiff = math.fabs(startingLat-destLat)
     boundaries = rectBoundaries(0,0,0,0)
     if(lonDiff<latDiff):   # lat rules
-        boundaries.topLat = max(startingLat,destLat)+1
-        boundaries.bottomLat = min(startingLat,destLat)-1
+        boundaries.topLat = max(startingLat,destLat)+0.5
+        boundaries.bottomLat = min(startingLat,destLat)-0.5
         lonAverage = (startingLon+destLon)/2
         boundaries.leftLon = lonAverage-(latDiff+1)/2
         boundaries.rightLon = lonAverage+(latDiff+1)/2
     else:                   # lon rules
-        boundaries.leftLon = min(startingLon,destLon)-1
-        boundaries.rightLon = max(startingLon,destLon)+1          # ONLY works in Northern Hemisphere
+        boundaries.leftLon = min(startingLon,destLon)-0.5
+        boundaries.rightLon = max(startingLon,destLon)+0.5          # ONLY works in Northern Hemisphere
         latAverage = (startingLat+destLat)/2
         boundaries.topLat = latAverage + (lonDiff+1)/2
         boundaries.bottomLat = latAverage - (lonDiff+1)/2
@@ -516,7 +511,6 @@ def writeToFile(file,route):
         currlonlat = coordPointToLonlat(coords)
         numOfSubPoints = haversine(previousLonLat,currlonlat) / 0.1
         for i in range (1,int(numOfSubPoints)+1):
-            #newLonLat = ((numOfSubPoints-i)*previousLonLat + i*currlonlat)/numOfSubPoints 
             newLonLat = lonLat((numOfSubPoints-i)/numOfSubPoints*previousLonLat.lon+i/numOfSubPoints*currlonlat.lon,(numOfSubPoints-i)/numOfSubPoints*previousLonLat.lat+i/numOfSubPoints*currlonlat.lat)
             index += 1
             file.write(str(index)+"   "+str(newLonLat.lon)+"   "+str(newLonLat.lat)+"   "+str(altitude)+"\n")
@@ -530,45 +524,14 @@ def writeToFile(file,route):
 
 
 def find_path(distance,boundaries):
+    global progressbar
     global root,UIZoomFactor,canvas_1,multithread,notReachable,route,loadStart
     global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
-    file = open("newfile.txt", "w")
-    map_data = genfromtxt('map_data.csv', delimiter=',')
-   
-    geoDataFile = open("NFZ data.txt","r")
-    rows = (row.strip().split() for row in geoDataFile)
-    geoData = [[]]
-
-    rowNum = 0
-    nameTextObjects = []
-    for eachline in rows:
-        geoData.append([])
-        geoData[rowNum].append(eachline[1])
-        geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
-        geoData[rowNum].append(eachline[2])
-        geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N","")) #lat
-        geoData[rowNum].append(eachline[3])
-        geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-")) # lon
-        name = ""
-        for counter in range (4,len(eachline)):
-            name += eachline[counter]
-            name += " "
-        xyText = [UIZoomFactor*lonToX(geoData[rowNum][2]),UIZoomFactor*latToY(geoData[rowNum][1])+20] 
-        nameObject = canvas_1.create_text(xyText, text=name)
-        nameTextObjects.append(nameObject)
-        rowNum = rowNum + 1
-
-    for eachLine in geoData:
-        if eachLine != []:
-            rectXY = setUpMap(eachLine,map_data,boundaries)
-            if rectXY != 0:
-                xy = [UIZoomFactor*rectXY.leftX+4, UIZoomFactor*rectXY.topY+4, UIZoomFactor*rectXY.rightX-4, UIZoomFactor*rectXY.bottomY-4] 
-                canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
-    for each in nameTextObjects:
-        canvas_1.tag_raise(each)
-
+    global fileName
+    file = open(fileName+".txt", "w")
+    map_data = genfromtxt('updated_data.csv', delimiter=',')
                     
     startingID = coordPointToPointID(lonLatToCoordPoint(startingPoint))
     destID = coordPointToPointID(lonLatToCoordPoint(destinationPoint))
@@ -577,7 +540,6 @@ def find_path(distance,boundaries):
     destX = pointIDToCoordPoint(destID).x
     destY = pointIDToCoordPoint(destID).y
     loadEnd = time.time()
-    print("Total Load Time = " + str(loadEnd - loadStart))
 
     computeStart = time.time()
     if float(map_data[startY][startX]) != 0.0:
@@ -607,10 +569,7 @@ def find_path(distance,boundaries):
             thread3.join()
 
     computeEnd = time.time()
-
-    print("Total Computation Time = " + str(computeEnd - computeStart))
    
-    print("Total Time = " + str(loadEnd-loadStart+computeEnd-computeStart))
     if not notReachable:
         if multithread:
             route = reconstruct_path(startingID,True,canvas_1) + reconstruct_path(destID,False,canvas_1)
@@ -626,8 +585,8 @@ def find_path(distance,boundaries):
             totalDis = totalDis + haversine(coordPointToLonlat(currCoordPoint),coordPointToLonlat(nextCoordPoint))
         
         totalDis = totalDis + haversine(coordPointToLonlat(pointIDToCoordPoint(route[len(route)-1])),destinationPoint)
-        print("Total Distance  = "+str(totalDis)+" KM")   
-        distText = Label(root, text="Total Load Time = " + str(loadEnd - loadStart)+"\nTotal Computation Time = " + str(computeEnd - computeStart)+"\nTotal Distance  = "+str(totalDis)+" KM")
+        #print("Total Distance  = "+str(totalDis)+" KM")   
+        distText = Label(root, text=("Total Load Time = " + str(round((loadEnd - loadStart),2))+"\nTotal Computation Time = " + str(round((computeEnd - computeStart),2))+"\nTotal Distance  = "+str(round(totalDis,2))+" KM"))
         distText.grid(row = 0,column = 0,sticky=W+S)                   
         updated_map_data = map_data
 
@@ -635,7 +594,7 @@ def find_path(distance,boundaries):
             updated_map_data[pointIDToCoordPoint(i).y][pointIDToCoordPoint(i).x] = 2
         np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
     else:
-        print(errorMessage)
+        #print(errorMessage)
         messagebox.showerror('Error',errorMessage)
 
     x_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).x
@@ -650,14 +609,14 @@ def find_path(distance,boundaries):
     canvas_1.tag_raise(startOb)
     canvas_1.tag_raise(destOb)
 
-   # root.bind("<Button-1>", callback)
-    #root.mainloop()
-
     file.close()
     pass
 
 
-def helloCallBack(lonS,latS,lonE,latE, alt):
+def submitButtonPressed(lonS,latS,lonE,latE, alt, _fileName):
+    global progressbar
+    global fileName
+    fileName = _fileName
     formatError = False
     try:
         float(lonS)
@@ -673,7 +632,7 @@ def helloCallBack(lonS,latS,lonE,latE, alt):
         precision = 2
         if not lonS or not latS or not latE or not alt:
             messagebox.showerror('Error','At least one of the boxes is empty.')
-        elif math.fabs((decimal.Decimal(lonS)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(latS)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(lonE)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(lonE)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(alt)).as_tuple().exponent) < precision:
+        elif math.fabs((decimal.Decimal(lonS)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(latS)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(lonE)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(latE)).as_tuple().exponent) < precision or math.fabs((decimal.Decimal(alt)).as_tuple().exponent) < precision:
             messagebox.showerror('Error','At least one of the boxes does not have enough decimal places.')
         else:
             global startingPoint,destinationPoint,altitude
@@ -684,9 +643,15 @@ def helloCallBack(lonS,latS,lonE,latE, alt):
             altitude = float(alt)
             find_path_main()
 
+
+
+
+
+
+
 def initializeGlobalVariables():    
     global route,k1,k2,b1,b2,xDimension,yDimension,notReachable,errorMessage,closedSetE,closedSetS
-    global cameFromE,cameFromS,stop,multithread,found,meetingPointID,UIZoomFactor,canvas_1,root
+    global cameFromE,cameFromS,stop,multithread,found,meetingPointID,UIZoomFactor,canvas_1,root, fileName
     route = []      
     k1 = 0
     k2 = 0
@@ -709,22 +674,27 @@ def initializeGlobalVariables():
     canvas_1.grid(row = 0,column = 0,columnspan = 4)
 
 def find_path_main():
+    global progressbar
+
     initializeGlobalVariables()
-    global loadStart,altitude
+    global loadStart, altitude, k1, k2, b1, b2, xDimension, yDimension, root, UIZoomFactor, canvas_1, route, startingPoint, destinationPoint, notReachable
     loadStart = time.time()
-    global k1, k2, b1, b2, xDimension, yDimension, root,UIZoomFactor,canvas_1,route
 
 
-    global startingPoint, destinationPoint,notReachable
+    global startingPointElevation
+    results = gmaps.elevation((startingPoint.lat, startingPoint.lon))
+    startingPointElevation = results[0]['resolution']
+   # print(results[0]['resolution'])
+
+
     distance = haversine(startingPoint,destinationPoint)
-    if distance <15:
+    if distance < 15:
         xDimension=200
         yDimension=200
         UIZoomFactor = 5
     else:
         xDimension = 120
         yDimension = 120
-        
 
     boundaries = get_boundaries(startingPoint.lon,startingPoint.lat,destinationPoint.lon,destinationPoint.lat)
     k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
@@ -732,47 +702,45 @@ def find_path_main():
     b1 = boundaries.leftLon
     b2 = boundaries.topLat
 
+    map_data = genfromtxt('map_data.csv', delimiter=',')
+    geoDataFile = open("NFZ data.txt","r")
+    rows = (row.strip().split() for row in geoDataFile)
+    geoData = [[]]
+    rowNum = 0
+    nameTextObjects = []
+    for eachline in rows:
+        geoData.append([])
+        geoData[rowNum].append(eachline[1])
+        geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
+        geoData[rowNum].append(eachline[2])
+        geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N","")) #lat
+        geoData[rowNum].append(eachline[3])
+        geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-")) # lon
+        name = ""
+        for counter in range (4,len(eachline)):
+            name += eachline[counter]
+            name += " "
+        xyText = [UIZoomFactor*lonToX(geoData[rowNum][2]),UIZoomFactor*latToY(geoData[rowNum][1])+20] 
+        nameObject = canvas_1.create_text(xyText, text=name)
+        nameTextObjects.append(nameObject)
+        rowNum = rowNum + 1
 
+    for eachLine in geoData:
+        if eachLine != []:
+            rectXY = setUpMap(eachLine,map_data,boundaries)
+            if rectXY != 0:
+                xy = [UIZoomFactor*rectXY.leftX, UIZoomFactor*rectXY.topY, UIZoomFactor*rectXY.rightX, UIZoomFactor*rectXY.bottomY] 
+               # xy = [UIZoomFactor*rectXY.leftX+4, UIZoomFactor*rectXY.topY+4, UIZoomFactor*rectXY.rightX-4, UIZoomFactor*rectXY.bottomY-4] 
+                canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
+    for each in nameTextObjects:
+        canvas_1.tag_raise(each)
     if distance <= 15:
         # xf = k1 * xi + b1
         # yf = k2 * yi + b2
-
-        file = open("newfile.txt", "w")
-        map_data = genfromtxt('map_data.csv', delimiter=',')
-        geoDataFile = open("NFZ data.txt","r")
-        rows = (row.strip().split() for row in geoDataFile)
-        geoData = [[]]
-        rowNum = 0
-        nameTextObjects = []
-        for eachline in rows:
-            geoData.append([])
-            geoData[rowNum].append(eachline[1])
-            geoData[rowNum][0] = float(geoData[rowNum][0].replace("RADIUS=",""))
-            geoData[rowNum].append(eachline[2])
-            geoData[rowNum][1] = float(geoData[rowNum][1].replace("CENTRE=N","")) #lat
-            geoData[rowNum].append(eachline[3])
-            geoData[rowNum][2] = float(geoData[rowNum][2].replace("W","-")) # lon
-            name = ""
-            for counter in range (4,len(eachline)):
-                name += eachline[counter]
-                name += " "
-            xyText = [UIZoomFactor*lonToX(geoData[rowNum][2]),UIZoomFactor*latToY(geoData[rowNum][1])+20] 
-            nameObject = canvas_1.create_text(xyText, text=name)
-            nameTextObjects.append(nameObject)
-            rowNum = rowNum + 1
-
-        for eachLine in geoData:
-            if eachLine != []:
-
-                rectXY = setUpMap(eachLine,map_data,boundaries)
-                if rectXY != 0:
-                    xy = [UIZoomFactor*rectXY.leftX+4, UIZoomFactor*rectXY.topY+4, UIZoomFactor*rectXY.rightX-4, UIZoomFactor*rectXY.bottomY-4] 
-                    canvas_1.create_arc(xy, start=0, extent=359.999999999,outline = "red",fill = "grey90")
-        for each in nameTextObjects:
-            canvas_1.tag_raise(each)
+        global fileName
+        file = open(fileName+".txt", "w")
 
         loadEnd = time.time()
-        print("Total Load Time = " + str(loadEnd - loadStart))
 
         computeStart = time.time()
   
@@ -819,18 +787,16 @@ def find_path_main():
                     file.write(str(index)+"   "+str(destinationPoint.lon)+"   "+str(destinationPoint.lat)+"   "+"0"+"\n")
                     gmapfile.write(str(destinationPoint.lon)+","+str(destinationPoint.lat)+"\n")
                     computeEnd = time.time()
-                    print("Total Computation Time = " + str(computeEnd - computeStart))
-                    print("Total Time = " + str(loadEnd-loadStart+computeEnd-computeStart))
+                    
+     
+
                     totalDis = haversine(startingPoint,destinationPoint)
                     startCoordPoint = lonLatToCoordPoint(startingPoint)
                     endCoordPoint = lonLatToCoordPoint(destinationPoint)
                     canvas_1.create_line(UIZoomFactor*startCoordPoint.x,UIZoomFactor*startCoordPoint.y,UIZoomFactor*endCoordPoint.x,UIZoomFactor*endCoordPoint.y)
                     canvas_1.create_oval([startCoordPoint.x*UIZoomFactor-3,startCoordPoint.y*UIZoomFactor-3,startCoordPoint.x*UIZoomFactor+3,startCoordPoint.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
                     canvas_1.create_oval([endCoordPoint.x*UIZoomFactor-3,endCoordPoint.y*UIZoomFactor-3,endCoordPoint.x*UIZoomFactor+3,endCoordPoint.y*UIZoomFactor+3],fill="green",outline = "green",activefill="green",activeoutline = "green", activewidth = 10)
-
-                    #file.write("Total Distance  = "+str(totalDis)+" KM")   
-                    print("Total Distance  = "+str(totalDis)+" KM")
-                    distText = Label(root, text="Total Load Time = " + str(loadEnd - loadStart)+"\nTotal Computation Time = " + str(computeEnd - computeStart)+"\nTotal Distance  = "+str(totalDis)+" KM")
+                    distText = Label(root, text=("Total Load Time = " + str(round((loadEnd - loadStart),2))+"\nTotal Computation Time = " + str(round((computeEnd - computeStart),2))+"\nTotal Distance  = "+str(round(totalDis,2))+" KM"))
                     distText.grid(row = 0,column = 0,sticky=W+S)   
             
             else:
@@ -841,39 +807,54 @@ def find_path_main():
         find_path(distance,boundaries)
 
 
+startLonTbox = Entry(root,width = 30)
+startLatTbox = Entry(root,width = 30)
+destLonTbox = Entry(root,width = 30)
+destLatTbox = Entry(root,width = 30)
+altTbox = Entry(root,width = 30)
+fileNameTbox = Entry(root,width = 30)
 
 def starting_page():
-    global canvas_1, root
+    global canvas_1, root, startLonTbox, startLatTbox, destLonTbox, destLatTbox,altTbox,fileNameTbox
     canvas_1.grid(row = 0,column = 0,columnspan = 4)
     startLonLbl = Label(root, text="Starting Longtitude:",  height=2)
     startLonLbl.grid(row=1, column=0,sticky=W)
-    startLonTbox = Entry(root,width = 30)
     startLonTbox.grid(row=1, column =1,sticky=W) 
 
     startLatLbl = Label(root, text="Starting Latitude:",  height=2)
     startLatLbl.grid(row=1, column=2,sticky=W)
-    startLatTbox = Entry(root,width = 30)
     startLatTbox.grid(row =1, column =3,sticky=W)
 
     destLonLbl = Label(root, text="Destination Longtitude:",  height=2)
     destLonLbl.grid(row=2, column=0,sticky=W)
-    destLonTbox = Entry(root,width = 30)
     destLonTbox.grid(row =2, column =1,sticky=W) 
 
     destLatLbl = Label(root, text="Destination Latitude:", height=2)
     destLatLbl.grid(row=2, column=2,sticky=W)
-    destLatTbox = Entry(root,width = 30)
     destLatTbox.grid(row =2, column =3,sticky=W) 
 
     altLbl = Label(root, text="Altitude:",  height=2)
     altLbl.grid(row=3, column=0,sticky=W)
-    altTbox = Entry(root,width = 30)
     altTbox.grid(row =3, column =1,sticky=W)
       
-    
-    B = Button(root, text ="Submit", command = lambda:helloCallBack(startLonTbox.get(),startLatTbox.get(),destLonTbox.get(),destLatTbox.get(), altTbox.get()))
-    B.grid(row = 3, column = 3,sticky = W)
+    fileNameTbox = Entry(root,width = 30)
+    fileNameTbox.grid(row =3, column =2,sticky=W)
+    fileNameTbox.insert(0, 'DDCRoute')
+
+    submitButton = Button(root, text ="Submit and Save to File", command = lambda:submitButtonPressed(startLonTbox.get(),startLatTbox.get(),destLonTbox.get(),destLatTbox.get(), altTbox.get(),fileNameTbox.get()))
+    submitButton.grid(row = 3, column = 3,sticky = W)
     root.mainloop()
     find_path_main()
 
+
+def func(event):
+    global startLonTbox, startLatTbox, destLonTbox, destLatTbox,altTbox,fileNameTbox
+    print("You hit return.")
+    submitButtonPressed(startLonTbox.get(),startLatTbox.get(),destLonTbox.get(),destLatTbox.get(), altTbox.get(),fileNameTbox.get())
+
+
+
+
+
+root.bind('<Return>', func)
 starting_page()
