@@ -73,6 +73,16 @@ maxStepSpecified = False
 indexArray = []            #exclude starting and ending point since elevation = 0
 lonArray = []
 latArray = []
+startLonTbox = Entry(root,width = 30)
+startLatTbox = Entry(root,width = 30)
+destLonTbox = Entry(root,width = 30)
+destLatTbox = Entry(root,width = 30)
+fileNameTbox = Entry(root,width = 30)
+altTbox = Entry(root,width = 30)
+canvas_2 = Canvas()
+canvas_2Exist = False
+photo2 = PhotoImage()
+
 class lonLat:
     def __init__(self, lon, lat):
         self.lon = lon
@@ -127,7 +137,7 @@ def heuristic_cost(start,goal):
     return result 
 
 def getAdjacentNeighbours(currentID,map_data):
-    #global flatModeOn,startingPointAltitude,destinationPointAltitude
+    global xDimension,yDimension
     mapsize = xDimension * yDimension
     left = currentID - yDimension # IDs
     right = currentID + yDimension
@@ -136,18 +146,41 @@ def getAdjacentNeighbours(currentID,map_data):
     currentX = pointIDToCoordPoint(currentID).x
     currentY = pointIDToCoordPoint(currentID).y
     
-    if currentX == 0 and currentY == 0:                             # top left corner
-        potentialNeightbours = [right, bottom]
-    elif currentX == 0 and currentY == yDimension - 1:              # bottom left corner
-        potentialNeightbours = [right, top]
-    elif currentX == xDimension - 1 and currentY == 0:              # top right corner
-        potentialNeightbours = [left, bottom]
-    elif currentX == xDimension - 1 and currentY == yDimension - 1: # bottom right corner
-        potentialNeightbours = [left, top]
-    elif currentX == 0:                                             # left edge
-        potentialNeightbours = [right, top, bottom]
-    elif currentX == xDimension - 1:                                # right edge
-        potentialNeightbours = [left, top, bottom]
+    #if currentX == 0 and currentY == 0:                             # top left corner
+    #    potentialNeightbours = [right, bottom]
+    #elif currentX == 0 and currentY == yDimension - 1:              # bottom left corner
+    #    potentialNeightbours = [right, top]
+    #elif currentX == xDimension - 1 and currentY == 0:              # top right corner
+    #    potentialNeightbours = [left, bottom]
+    #elif currentX == xDimension - 1 and currentY == yDimension - 1: # bottom right corner
+    #    potentialNeightbours = [left, top]
+    #elif currentX == 0:                                             # left edge
+    #    potentialNeightbours = [right, top, bottom]
+    #elif currentX == xDimension - 1:                                # right edge
+    #    potentialNeightbours = [left, top, bottom]
+    #elif currentY == 0:                                             # top edge
+    #    potentialNeightbours = [left, right, bottom]
+    #elif currentY == yDimension - 1:                                # bottom edge
+    #    potentialNeightbours = [left, right, top]
+    #else:
+    #    potentialNeightbours = [left, right, top, bottom]
+
+
+
+    if currentX == 0:
+        if currentY == 0:                                            # top left corner
+            potentialNeightbours = [right, bottom]
+        elif currentY == yDimension - 1:                             # bottom left corner
+            potentialNeightbours = [right, top]
+        else:                                                        # left edge
+            potentialNeightbours = [right, top, bottom]
+    elif currentX == xDimension - 1:
+        if currentY == 0:                                           # top right corner
+            potentialNeightbours = [left, bottom]
+        elif currentY == yDimension - 1:                            # bottom right corner
+            potentialNeightbours = [left, top]
+        else:                                                       # right edge
+            potentialNeightbours = [left, top, bottom]
     elif currentY == 0:                                             # top edge
         potentialNeightbours = [left, right, bottom]
     elif currentY == yDimension - 1:                                # bottom edge
@@ -155,8 +188,6 @@ def getAdjacentNeighbours(currentID,map_data):
     else:
         potentialNeightbours = [left, right, top, bottom]
     
-    #updated_map_data = genfromtxt('updated_data.csv', delimiter=',')
-
     currAltInMeters = elevation_data.get_elevation( coordPointToLonLat(pointIDToCoordPoint(currentID)).lat,coordPointToLonLat(pointIDToCoordPoint(currentID)).lon)
     if currAltInMeters:
         currAlt = currAltInMeters * 3.28084
@@ -164,15 +195,8 @@ def getAdjacentNeighbours(currentID,map_data):
         print("no data\n") 
     global upperAltitude,lowerAltitude
     adjacentNeighbours = []
-    #for each in potentialNeightbours:
-    #    coords = pointIDToCoordPoint(each)
-    #    if float(map_data[coords.y][coords.x]) == 0.0:
-    #        adjacentNeighbours.append(each)
-    #    else:
-    #        continue
     for each in potentialNeightbours:
         coords = pointIDToCoordPoint(each)
-        
         if float(map_data[coords.y][coords.x]) == 0.0:
             if not flatModeOn:                                               # standard operation
                 adjacentNeighbours.append(each)
@@ -225,18 +249,7 @@ def getCornerNeighbours(currentID,map_data):
         print("no data\n") 
 
     cornerNeighbours = []
-    #for each in potentialNeightbours:
-    #    if each >= 0 and each < mapsize:
-    #        coords = pointIDToCoordPoint(each)
-    #        if float(map_data[coords.y][coords.x]) == 0.0:                          
-    #            cornerNeighbours.append(each)
-    #        else:
-    #            continue 
-
-    #updated_map_data = genfromtxt('updated_data.csv', delimiter=',')
-
-    global flatModeOn,startingPointAltitude,destinationPointAltitude
-    global upperAltitude,lowerAltitude
+    global flatModeOn, upperAltitude,lowerAltitude
     for each in potentialNeightbours:
         if each >= 0 and each < mapsize:
             coords = pointIDToCoordPoint(each)
@@ -275,8 +288,7 @@ def yToLat(yValue):
 
 
 def reconstruct_path(endPointID,needReverse,canvas):
-    global startingPointAltitude,destinationPointAltitude,map_0,map_osm
-    global canvas_1,UIZoomFactor,meetingPointID,flatModeOn
+    global map_0,map_osm, canvas_1,UIZoomFactor,meetingPointID,flatModeOn
     # xf = k1 * xi + b1
     # yf = k2 * yi + b2
     total_path = []
@@ -323,7 +335,6 @@ def reconstruct_path(endPointID,needReverse,canvas):
 
 
 def aStar(startID,goalID,map_data,isStart):
-    global flatModeOn,startingPointAltitude,destinationPointAltitude,lowerAltitude,upperAltitude
     global closedSetE, closedSetS, cameFromE,cameFromS,multithread,found
     global notReachable, errorMessage
     if isStart:
@@ -353,15 +364,11 @@ def aStar(startID,goalID,map_data,isStart):
         if stop: 
             return 0
         currentID = min(dicOpenSet, key = dicOpenSet.get)  
-   
         if multithread == False and currentID == goalID:
             found = True
             return 0
-
         openSet.remove(currentID)
         del dicOpenSet[currentID]
-        
-
         if currentID not in closedSet:
             closedSet.append(currentID)
         adjacentNeighbours = getAdjacentNeighbours(currentID,map_data)
@@ -476,8 +483,8 @@ def setUpMap(line,map_data, boundaries):
     if boundaries.bottomLat > centerLat or boundaries.topLat < centerLat or boundaries.leftLon > centerLon or boundaries.rightLon < centerLon:
         return 0
 
-    folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_0)
-    folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_osm)
+    #folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_0)
+    #folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_osm)
     k = radius/EARTH_RADIUS
     topLat = centerLat + k 
     bottomLat = centerLat - k
@@ -501,7 +508,7 @@ def setUpMap(line,map_data, boundaries):
         for x in range (leftX, rightX+1):
             checkPoint = coordPoint(x,y)
             checkLonlat = coordPointToLonLat(checkPoint)
-            if x>=0 and x< xDimension and y>=0 and y<yDimension and haversine(checkLonlat,center) <= 9:
+            if x>=0 and x< xDimension and y>=0 and y<yDimension and haversine(checkLonlat,center) <= radius: 
                 updated_map_data[y][x] = 1
 
     np.savetxt("updated_data.csv", updated_map_data ,fmt='%d', delimiter=',') 
@@ -512,7 +519,7 @@ def setUpMap(line,map_data, boundaries):
 
 def writeToFile(file):
     global altitude,elevationArray,upperBoundArray,lowerBoundArray,route, startingPointAltitude,indexArray,lonArray,latArray
-    indexArray = []            #exclude starting and ending point since elevation = 0
+    indexArray = []            #exclude starting and ending point since rise = 0
     lonArray = []
     latArray = []
 
@@ -577,9 +584,7 @@ def writeToFile(file):
 
 def find_path(distance,boundaries):
     global root,UIZoomFactor,canvas_1,multithread,notReachable,route,loadStart,errorMessage
-    global k1, k2, b1, b2, xDimension, yDimension, startingPoint, destinationPoint
-    # xf = k1 * xi + b1
-    # yf = k2 * yi + b2
+    global startingPoint, destinationPoint
     global fileName
     file = open(fileName+".txt", "w")
     map_data = genfromtxt('updated_data.csv', delimiter=',')
@@ -593,7 +598,8 @@ def find_path(distance,boundaries):
     loadEnd = time.time()
 
     computeStart = time.time()
-    if distance > 15:
+    if distance > 30:
+        print("multi")
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -604,6 +610,7 @@ def find_path(distance,boundaries):
         thread2.join()
         thread3.join()
     else:
+        print("not multi")
         multithread = False
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -647,16 +654,21 @@ def find_path(distance,boundaries):
     droneLandingPhoto = PhotoImage(file="droneLanding.png")
     canvas_1.create_image(xyE, anchor=NW, image=droneLandingPhoto)
 
-
     file.close()
     pass
 
 
 
-def submitButtonPressed(lonS,latS,lonE,latE,alt, _fileName):
-    global flatModeOn,altitude
-    global fileName,canvas_2,canvas_2Exist
-    global startingPoint,destinationPoint
+def submitButtonPressed():
+
+
+    lonS = startLonTbox.get()
+    latS = startLatTbox.get()
+    lonE = destLonTbox.get()
+    latE = destLatTbox.get()
+    alt = altTbox.get()
+    _fileName = fileNameTbox.get()
+    global flatModeOn,altitude, fileName,canvas_2,canvas_2Exist, startingPoint,destinationPoint
     pyplot.close()
 
     flatModeOn = False
@@ -700,19 +712,13 @@ def submitButtonPressed(lonS,latS,lonE,latE,alt, _fileName):
         destinationPoint.lat = float(latE)
         altitude = float(alt)
         find_path_main()
-
+    return 0
 
 
 def initializeGlobalVariables():    
-    global route,k1,k2,b1,b2,xDimension,yDimension,notReachable,errorMessage,closedSetE,closedSetS,startingPointAltitude,destinationPointAltitude
-    global cameFromE,cameFromS,stop,multithread,found,meetingPointID,UIZoomFactor,canvas_1,root, fileName,standardFinished
+    global route,notReachable,errorMessage,closedSetE,closedSetS
+    global cameFromE,cameFromS,stop,multithread,found,meetingPointID,canvas_1,root,standardFinished
     route = []      
-    k1 = 0
-    k2 = 0
-    b1 = 0
-    b2 = 0
-    xDimension = 0
-    yDimension = 0
     notReachable = False
     errorMessage = ""
     closedSetS = []
@@ -723,35 +729,32 @@ def initializeGlobalVariables():
     multithread = True
     found = False
     meetingPointID = 0
-    UIZoomFactor = 8
     canvas_1 = Canvas(root,width=1000,height = 800,background = "white")
     canvas_1.grid(row = 0,column = 0,columnspan = 4)
-    startingPointAltitude = 0.0
-    destinationPointAltitude = 0.0
     standardFinished = False
+    return 0
 
 def find_path_main():
-    global loadStart,map_0,map_osm
+    global loadStart,map_0,map_osm,flatModeOn,underFifteen
     loadStart = time.time()
-    global flatModeOn,underFifteen
     # ▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾ MAP SETUP ▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾▾
     if not flatModeOn:
         initializeGlobalVariables()
         global standardFinished,destinationPointAltitude
         global k1, k2, b1, b2, xDimension, yDimension, root, UIZoomFactor, canvas_1
         global route, startingPoint, destinationPoint, notReachable, errorMessage,startingPointAltitude
-        
-        
-        
-        map_0 = folium.Map(location=[(startingPoint.lat+destinationPoint.lat)/2,(startingPoint.lon+destinationPoint.lon)/2], tiles='Stamen Terrain',
-                   zoom_start=8)
+
+        map_0 = folium.Map(location=[(startingPoint.lat+destinationPoint.lat)/2,(startingPoint.lon+destinationPoint.lon)/2], tiles='Stamen Terrain', zoom_start=8)
         folium.LatLngPopup().add_to(map_0)        
         map_osm = folium.Map(location=[(startingPoint.lat+destinationPoint.lat)/2,(startingPoint.lon+destinationPoint.lon)/2],zoom_start=8)
         folium.LatLngPopup().add_to(map_osm)
+
+
+        m1 = time.time()
+        print("m1 = "+ str(m1-loadStart))
         
-
-
-
+        
+        
         tempStartAlt = elevation_data.get_elevation(startingPoint.lat, startingPoint.lon)
         tempEndAlt = elevation_data.get_elevation(destinationPoint.lat, destinationPoint.lon)
         if tempStartAlt:
@@ -759,7 +762,6 @@ def find_path_main():
         else:
             messagebox.showerror('Error','No altitude data available at starting point.')
             return 0
-
         if tempEndAlt:
             destinationPointAltitude = tempEndAlt * 3.28084
         else:
@@ -775,6 +777,12 @@ def find_path_main():
             xDimension = 150
             yDimension = 150
             UIZoomFactor = 6.5
+
+
+        m2 = time.time()
+        print("m2 = "+ str(m2-m1))
+
+
 
         boundaries = get_boundaries(startingPoint.lon,startingPoint.lat,destinationPoint.lon,destinationPoint.lat)
         k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
@@ -807,7 +815,12 @@ def find_path_main():
             nameObject = canvas_1.create_text(xyText, text=name)
             nameTextObjects.append(nameObject)
             rowNum = rowNum + 1
-            
+        
+
+        m3 = time.time()
+        print("m3 = "+ str(m3-m2))
+
+
         # check if starting/ending points are in the NFZ
         for eachLine in geoData:
             if eachLine != []:
@@ -828,6 +841,11 @@ def find_path_main():
                     
         for each in nameTextObjects:
             canvas_1.tag_raise(each)
+
+
+
+        m4 = time.time()
+        print("m4 = "+ str(m4-m3))
     else:
         distance = haversine(startingPoint,destinationPoint)
         boundaries = get_boundaries(startingPoint.lon,startingPoint.lat,destinationPoint.lon,destinationPoint.lat)
@@ -933,9 +951,8 @@ def find_path_main():
         pyplot.plot(xAxieArray,upperBoundArray,label="400 bound") 
         pyplot.plot(xAxieArray,lowerBoundArray,label="300 bound") 
         pyplot.show(block=False)
-    map_0.save('sthelens.html')
+    map_0.save('terrain.html')
     map_osm.save('osm.html')
-
 
 
 
@@ -948,15 +965,7 @@ def createMiniMap(boundaries):
 
 
 
-startLonTbox = Entry(root,width = 30)
-startLatTbox = Entry(root,width = 30)
-destLonTbox = Entry(root,width = 30)
-destLatTbox = Entry(root,width = 30)
-fileNameTbox = Entry(root,width = 30)
-altTbox = Entry(root,width = 30)
-canvas_2 = Canvas()
-canvas_2Exist = False
-photo2 = PhotoImage()
+
 
 
 
@@ -1002,9 +1011,7 @@ def draw_zoomout():
             rectXY = rectBoundariesInXY(leftX,rightX,topY,bottomY)
             
             xy = [UIZoomFactor*rectXY.leftX*0.5+250, UIZoomFactor*rectXY.bottomY*0.5+200, UIZoomFactor*rectXY.rightX*0.5+250, UIZoomFactor*rectXY.topY*0.5+200] 
-
             canvas_2.create_arc(xy, start=0, extent=359.999999999,outline = "grey90",fill = "grey90")
-
             name = eachLine[3]
             xyText = [UIZoomFactor*rectXY.leftX*0.5+250, UIZoomFactor*rectXY.bottomY*0.5+200+5] 
             nameObject = canvas_2.create_text(xyText, text=name)
@@ -1171,7 +1178,7 @@ def starting_page():
     fileNameTbox.grid(row =3, column =2,sticky=W)
     fileNameTbox.insert(0, 'DDCRoute')
 
-    submitButton = Button(root, text ="Submit and Save to File", command = lambda:submitButtonPressed(startLonTbox.get(),startLatTbox.get(),destLonTbox.get(),destLatTbox.get(),altTbox.get(), fileNameTbox.get()))
+    submitButton = Button(root, text ="Submit and Save to File", command = lambda:submitButtonPressed())
     submitButton.grid(row = 3, column = 3,sticky = W)
 
     zoomOutButton = Button(root,text = " +       ",command = lambda:removeCanvas2())
@@ -1191,7 +1198,7 @@ def starting_page():
 def func(event):
     global startLonTbox, startLatTbox, destLonTbox, destLatTbox,altTbox,fileNameTbox
     print("You hit return.")
-    submitButtonPressed(startLonTbox.get(),startLatTbox.get(),destLonTbox.get(),destLatTbox.get(),altTbox.get(),fileNameTbox.get())
+    submitButtonPressed()
 
 
 
