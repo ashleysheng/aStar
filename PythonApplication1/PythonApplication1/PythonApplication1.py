@@ -480,11 +480,13 @@ def setUpMap(line,map_data, boundaries):
     # (x,y) = (lon * cos(lat avg) , lat)
     # d = R * sqrt((y2-y1)^2 + (x2-x1)^2)
     
+    # skip if not in boundaries
     if boundaries.bottomLat > centerLat or boundaries.topLat < centerLat or boundaries.leftLon > centerLon or boundaries.rightLon < centerLon:
         return 0
 
-    #folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_0)
-    #folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_osm)
+    folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_0)
+    folium.CircleMarker(location=[centerLat, centerLon], radius=7000,popup=line[3], color='#fa0b0b',fill_color='#fa0b0b').add_to(map_osm)
+
     k = radius/EARTH_RADIUS
     topLat = centerLat + k 
     bottomLat = centerLat - k
@@ -502,6 +504,7 @@ def setUpMap(line,map_data, boundaries):
     rightX = lonToX(rightZoneLon)
     leftX = lonToX(leftZoneLon)
 
+    # mark nfzs in excel file
     updated_map_data = map_data
 
     for y in range (topY, bottomY+1):
@@ -530,6 +533,8 @@ def writeToFile(file):
     elevationArray = []
     upperBoundArray = []
     lowerBoundArray = []
+
+    # write to waypoint file, less than 100 m away from each other
     for each in route:
         coords = pointIDToCoordPoint(each)
         currlonlat = coordPointToLonLat(coords)
@@ -598,8 +603,8 @@ def find_path(distance,boundaries):
     loadEnd = time.time()
 
     computeStart = time.time()
+    # multithread if distance is longer
     if distance > 30:
-        print("multi")
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread2 = threading.Thread(target = aStar, args = (destID,startingID,map_data,False))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -610,7 +615,6 @@ def find_path(distance,boundaries):
         thread2.join()
         thread3.join()
     else:
-        print("not multi")
         multithread = False
         thread1 = threading.Thread(target = aStar, args = (startingID,destID,map_data,True))
         thread3 = threading.Thread(target = multi_thread_monitor,args = ())
@@ -640,7 +644,7 @@ def find_path(distance,boundaries):
         updated_map_data = map_data
     else:
         messagebox.showerror('Error',errorMessage)
-
+    
     x_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).x
     y_anchor_start = UIZoomFactor*lonLatToCoordPoint(startingPoint).y
     x_anchor_end = UIZoomFactor*lonLatToCoordPoint(destinationPoint).x
@@ -744,17 +748,13 @@ def find_path_main():
         global k1, k2, b1, b2, xDimension, yDimension, root, UIZoomFactor, canvas_1
         global route, startingPoint, destinationPoint, notReachable, errorMessage,startingPointAltitude
 
+        # initialize html files
         map_0 = folium.Map(location=[(startingPoint.lat+destinationPoint.lat)/2,(startingPoint.lon+destinationPoint.lon)/2], tiles='Stamen Terrain', zoom_start=8)
         folium.LatLngPopup().add_to(map_0)        
         map_osm = folium.Map(location=[(startingPoint.lat+destinationPoint.lat)/2,(startingPoint.lon+destinationPoint.lon)/2],zoom_start=8)
         folium.LatLngPopup().add_to(map_osm)
-
-
-        m1 = time.time()
-        print("m1 = "+ str(m1-loadStart))
         
-        
-        
+        # check if starting/ending points have elevation data
         tempStartAlt = elevation_data.get_elevation(startingPoint.lat, startingPoint.lon)
         tempEndAlt = elevation_data.get_elevation(destinationPoint.lat, destinationPoint.lon)
         if tempStartAlt:
@@ -767,7 +767,7 @@ def find_path_main():
         else:
             messagebox.showerror('Error','No altitude data available at destination point.')
             return 0
-
+        
         distance = haversine(startingPoint,destinationPoint)
         if distance < 15:
             xDimension=200
@@ -778,18 +778,14 @@ def find_path_main():
             yDimension = 150
             UIZoomFactor = 6.5
 
-
-        m2 = time.time()
-        print("m2 = "+ str(m2-m1))
-
-
-
+        # Get map boundaries
         boundaries = get_boundaries(startingPoint.lon,startingPoint.lat,destinationPoint.lon,destinationPoint.lat)
         k1 = (boundaries.rightLon - boundaries.leftLon)/(xDimension)
         k2 = (boundaries.bottomLat - boundaries.topLat)/(yDimension)
         b1 = boundaries.leftLon
         b2 = boundaries.topLat
 
+        # Process nfz data from text file line by line
         map_data = genfromtxt('map_data.csv', delimiter=',')
         np.savetxt("updated_data.csv", map_data ,fmt='%d', delimiter=',') 
         geoDataFile = open("nfz.txt","r")
@@ -815,12 +811,7 @@ def find_path_main():
             nameObject = canvas_1.create_text(xyText, text=name)
             nameTextObjects.append(nameObject)
             rowNum = rowNum + 1
-        
-
-        m3 = time.time()
-        print("m3 = "+ str(m3-m2))
-
-
+   
         # check if starting/ending points are in the NFZ
         for eachLine in geoData:
             if eachLine != []:
@@ -834,6 +825,7 @@ def find_path_main():
                     notReachable = True
                     errorMessage = "ending not reachable"
                     break
+                # call function to set up map
                 rectXY = setUpMap(eachLine,map_data,boundaries)
                 if rectXY != 0:
                     xy = [UIZoomFactor*rectXY.leftX, UIZoomFactor*rectXY.bottomY, UIZoomFactor*rectXY.rightX, UIZoomFactor*rectXY.topY] 
@@ -842,10 +834,6 @@ def find_path_main():
         for each in nameTextObjects:
             canvas_1.tag_raise(each)
 
-
-
-        m4 = time.time()
-        print("m4 = "+ str(m4-m3))
     else:
         distance = haversine(startingPoint,destinationPoint)
         boundaries = get_boundaries(startingPoint.lon,startingPoint.lat,destinationPoint.lon,destinationPoint.lat)
@@ -1036,7 +1024,7 @@ def draw_zoomout():
     canvas_2.create_rectangle(750,3,1000,190)
 
 
-
+# show zoom-out view
 def showCanvas2():
     global canvas_2,canvas_2Exist, standardFinished
     if not standardFinished:
@@ -1048,7 +1036,7 @@ def showCanvas2():
         canvas_2Exist = True
 
 
-
+# remove zoom-out view
 def removeCanvas2():
     global canvas_2,canvas_2Exist
     if not standardFinished:
@@ -1114,6 +1102,8 @@ def moreEco():
         return 0
 
     pyplot.close()
+
+    # take the average of two adjcent points, make the path smoother
     for i in range (0,100):
         for iter in range(1,numOfWayPoints-1):
             averageOfTwoNeighbours = (elevationArray[iter-1]+elevationArray[iter+1])/2
@@ -1128,7 +1118,6 @@ def moreEco():
     xAxieArray = []
     for i in range (0,numOfWayPoints):
         xAxieArray.append(i)
-
     pyplot.plot(xAxieArray,elevationArray,label="elevation") 
     pyplot.plot(xAxieArray,upperBoundArray,label="400 bound") 
     pyplot.plot(xAxieArray,lowerBoundArray,label="300 bound") 

@@ -110,7 +110,7 @@
             
         
             
-            <style> #map_506f0116ac254d25b32f18d9113a6902 {
+            <style> #map_0ea411263f75490eb4d23cba2c896c83 {
                 position : relative;
                 width : 100.0%;
                 height: 100.0%;
@@ -126,7 +126,7 @@
             
         
             
-            <div class="folium-map" id="map_506f0116ac254d25b32f18d9113a6902" ></div>
+            <div class="folium-map" id="map_0ea411263f75490eb4d23cba2c896c83" ></div>
         
         
         
@@ -140,8 +140,8 @@
             var northEast = L.latLng(90, 180);
             var bounds = L.latLngBounds(southWest, northEast);
 
-            var map_506f0116ac254d25b32f18d9113a6902 = L.map('map_506f0116ac254d25b32f18d9113a6902', {
-                                           center:[50.5,-79.25],
+            var map_0ea411263f75490eb4d23cba2c896c83 = L.map('map_0ea411263f75490eb4d23cba2c896c83', {
+                                           center:[43.25,-80.8],
                                            zoom: 8,
                                            maxBounds: bounds,
                                            layers: [],
@@ -151,7 +151,7 @@
         
         
             
-            var tile_layer_0b6b4da10a8746028ae8943eb537bff2 = L.tileLayer(
+            var tile_layer_64a9a0472ff64159bca60aa7049dd98a = L.tileLayer(
                 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
                 {
                     maxZoom: 18,
@@ -159,845 +159,2495 @@
                     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.',
                     detectRetina: false
                     }
-                ).addTo(map_506f0116ac254d25b32f18d9113a6902);
+                ).addTo(map_0ea411263f75490eb4d23cba2c896c83);
 
         
         
             
-                var lat_lng_popup_e9c251f0d6e748bba5ad08bab9dc7c38 = L.popup();
+                var lat_lng_popup_ba7724b660f44281bbc728c75c55b443 = L.popup();
                 function latLngPop(e) {
-                    lat_lng_popup_e9c251f0d6e748bba5ad08bab9dc7c38
+                    lat_lng_popup_ba7724b660f44281bbc728c75c55b443
                         .setLatLng(e.latlng)
                         .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
                                     "<br>Longitude: " + e.latlng.lng.toFixed(4))
-                        .openOn(map_506f0116ac254d25b32f18d9113a6902);
+                        .openOn(map_0ea411263f75490eb4d23cba2c896c83);
                     }
-                map_506f0116ac254d25b32f18d9113a6902.on('click', latLngPop);
+                map_0ea411263f75490eb4d23cba2c896c83.on('click', latLngPop);
             
         
             
 
-            var marker_776f4c625f844c1da6d5ed14ae95f8ff = L.marker(
-                [50.02,-79.01],
+            var circle_marker_d79abb9dea464a668878065a0cb137bc = L.circle(
+                [43.7830555555556,-80.4336111111111],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_a0d0e756f5eb457eb44c2ff667cb3a7e = L.popup({maxWidth: '300'});
+
+            
+                var html_c6cc77e91f794d31bcfc0914c6677499 = $('         <div id="html_c6cc77e91f794d31bcfc0914c6677499"                 style="width: 100.0%; height: 100.0%;">                 Arthur (Arthur South) Aerodrome </div>                 ')[0];
+                popup_a0d0e756f5eb457eb44c2ff667cb3a7e.setContent(html_c6cc77e91f794d31bcfc0914c6677499);
+            
+
+            circle_marker_d79abb9dea464a668878065a0cb137bc.bindPopup(popup_a0d0e756f5eb457eb44c2ff667cb3a7e);
+
+            
+        
+        
+            
+
+            var circle_marker_f590f2d27288485fa410c3f269018f5f = L.circle(
+                [43.8105555555556,-80.4358333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_2edabb3eedb64f67ad2699bd45a9b561 = L.popup({maxWidth: '300'});
+
+            
+                var html_039e4cb2626740688777ca346532b8fd = $('         <div id="html_039e4cb2626740688777ca346532b8fd"                 style="width: 100.0%; height: 100.0%;">                 Arthur (Metz Field) Aerodrome </div>                 ')[0];
+                popup_2edabb3eedb64f67ad2699bd45a9b561.setContent(html_039e4cb2626740688777ca346532b8fd);
+            
+
+            circle_marker_f590f2d27288485fa410c3f269018f5f.bindPopup(popup_2edabb3eedb64f67ad2699bd45a9b561);
+
+            
+        
+        
+            
+
+            var circle_marker_530ff5231e184f93bc55cca34c762fc5 = L.circle(
+                [43.7708333333333,-80.485],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_3c07dcb802dc499a8822003ba80eb140 = L.popup({maxWidth: '300'});
+
+            
+                var html_01a4f0e7006f4903a409db3626036ee1 = $('         <div id="html_01a4f0e7006f4903a409db3626036ee1"                 style="width: 100.0%; height: 100.0%;">                 Arthur (Peskett Field) Aerodrome </div>                 ')[0];
+                popup_3c07dcb802dc499a8822003ba80eb140.setContent(html_01a4f0e7006f4903a409db3626036ee1);
+            
+
+            circle_marker_530ff5231e184f93bc55cca34c762fc5.bindPopup(popup_3c07dcb802dc499a8822003ba80eb140);
+
+            
+        
+        
+            
+
+            var circle_marker_99b972965e474bcf966143d5dd179b64 = L.circle(
+                [43.85,-80.45],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_ddd9b0f03391430c86e7adb8c4aec8e1 = L.popup({maxWidth: '300'});
+
+            
+                var html_bdb3077e505b4fe6a817891e62f48ed2 = $('         <div id="html_bdb3077e505b4fe6a817891e62f48ed2"                 style="width: 100.0%; height: 100.0%;">                 Arthur (Walter&#39;s Field) Aerodrome </div>                 ')[0];
+                popup_ddd9b0f03391430c86e7adb8c4aec8e1.setContent(html_bdb3077e505b4fe6a817891e62f48ed2);
+            
+
+            circle_marker_99b972965e474bcf966143d5dd179b64.bindPopup(popup_ddd9b0f03391430c86e7adb8c4aec8e1);
+
+            
+        
+        
+            
+
+            var circle_marker_a3d69be43fa8454288c6b7518622c6c5 = L.circle(
+                [43.6833333333333,-81.0044444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_3f28de49f37d4277a2ec8c997c89dd13 = L.popup({maxWidth: '300'});
+
+            
+                var html_28d098cf5dfe433ba004cb698d71d040 = $('         <div id="html_28d098cf5dfe433ba004cb698d71d040"                 style="width: 100.0%; height: 100.0%;">                 Atwood/Coghlin Airport </div>                 ')[0];
+                popup_3f28de49f37d4277a2ec8c997c89dd13.setContent(html_28d098cf5dfe433ba004cb698d71d040);
+            
+
+            circle_marker_a3d69be43fa8454288c6b7518622c6c5.bindPopup(popup_3f28de49f37d4277a2ec8c997c89dd13);
+
+            
+        
+        
+            
+
+            var circle_marker_32fefb113d6144c1b0e66d464785d137 = L.circle(
+                [43.3058333333333,-80.4991666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_ecfd6eb34c5f4982ab530b4d4583762c = L.popup({maxWidth: '300'});
+
+            
+                var html_6a6de2fd564f4114a4deddf9c46a60bc = $('         <div id="html_6a6de2fd564f4114a4deddf9c46a60bc"                 style="width: 100.0%; height: 100.0%;">                 Ayr/Sargeant Private Airfield </div>                 ')[0];
+                popup_ecfd6eb34c5f4982ab530b4d4583762c.setContent(html_6a6de2fd564f4114a4deddf9c46a60bc);
+            
+
+            circle_marker_32fefb113d6144c1b0e66d464785d137.bindPopup(popup_ecfd6eb34c5f4982ab530b4d4583762c);
+
+            
+        
+        
+            
+
+            var circle_marker_348c0bb5f0f04e1ba55b008c72af9586 = L.circle(
+                [43.8083333333333,-80.3119444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_dfecde193e1c415db4343082a2e940a8 = L.popup({maxWidth: '300'});
+
+            
+                var html_b3865cf3427048a397e84a16af8f6312 = $('         <div id="html_b3865cf3427048a397e84a16af8f6312"                 style="width: 100.0%; height: 100.0%;">                 Belwood (Baird Field) Aerodrome </div>                 ')[0];
+                popup_dfecde193e1c415db4343082a2e940a8.setContent(html_b3865cf3427048a397e84a16af8f6312);
+            
+
+            circle_marker_348c0bb5f0f04e1ba55b008c72af9586.bindPopup(popup_dfecde193e1c415db4343082a2e940a8);
+
+            
+        
+        
+            
+
+            var circle_marker_1dbf2a19dea24115943cad1800af578a = L.circle(
+                [43.8055555555556,-80.3738888888889],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_130e6c67a7504d4fb6f784d85fd578d2 = L.popup({maxWidth: '300'});
+
+            
+                var html_c9685ade861b4183814ccdc62621f82f = $('         <div id="html_c9685ade861b4183814ccdc62621f82f"                 style="width: 100.0%; height: 100.0%;">                 Belwood (Ellen Field) Aerodrome </div>                 ')[0];
+                popup_130e6c67a7504d4fb6f784d85fd578d2.setContent(html_c9685ade861b4183814ccdc62621f82f);
+            
+
+            circle_marker_1dbf2a19dea24115943cad1800af578a.bindPopup(popup_130e6c67a7504d4fb6f784d85fd578d2);
+
+            
+        
+        
+            
+
+            var circle_marker_ebceae8564ff454281ed08253bd93daf = L.circle(
+                [43.8083333333333,-80.3119444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_44c64107cfa04cb985566c08009a8801 = L.popup({maxWidth: '300'});
+
+            
+                var html_2f98719bf95c4877a984491f4a15345d = $('         <div id="html_2f98719bf95c4877a984491f4a15345d"                 style="width: 100.0%; height: 100.0%;">                 Belwood (Heurisko Pond) Water Aerodrome </div>                 ')[0];
+                popup_44c64107cfa04cb985566c08009a8801.setContent(html_2f98719bf95c4877a984491f4a15345d);
+            
+
+            circle_marker_ebceae8564ff454281ed08253bd93daf.bindPopup(popup_44c64107cfa04cb985566c08009a8801);
+
+            
+        
+        
+            
+
+            var circle_marker_7e9a6f1f8bda4f25833b01807b2272d5 = L.circle(
+                [43.7938888888889,-80.4025],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_f894a32f402646778e1c02a154ed1068 = L.popup({maxWidth: '300'});
+
+            
+                var html_2f4042c5696a419ba2dd2b6449ceeefb = $('         <div id="html_2f4042c5696a419ba2dd2b6449ceeefb"                 style="width: 100.0%; height: 100.0%;">                 Belwood (Wright Field) Aerodrome </div>                 ')[0];
+                popup_f894a32f402646778e1c02a154ed1068.setContent(html_2f4042c5696a419ba2dd2b6449ceeefb);
+            
+
+            circle_marker_7e9a6f1f8bda4f25833b01807b2272d5.bindPopup(popup_f894a32f402646778e1c02a154ed1068);
+
+            
+        
+        
+            
+
+            var circle_marker_0f378f9bff8b4440896855259a953b53 = L.circle(
+                [43.1313888888889,-80.3425],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_73c02c52676349d8a222dccaab26b440 = L.popup({maxWidth: '300'});
+
+            
+                var html_25286410164d48489396e928537baf33 = $('         <div id="html_25286410164d48489396e928537baf33"                 style="width: 100.0%; height: 100.0%;">                 Brantford Airport </div>                 ')[0];
+                popup_73c02c52676349d8a222dccaab26b440.setContent(html_25286410164d48489396e928537baf33);
+            
+
+            circle_marker_0f378f9bff8b4440896855259a953b53.bindPopup(popup_73c02c52676349d8a222dccaab26b440);
+
+            
+        
+        
+            
+
+            var circle_marker_f17dc12fe3b447218fe17eba5787c1b5 = L.circle(
+                [43.75,-81.2333333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_b61e2b8cd2ea43b280628e6d1428911c = L.popup({maxWidth: '300'});
+
+            
+                var html_3d043a4a22a8440c8f46b4126c55b72a = $('         <div id="html_3d043a4a22a8440c8f46b4126c55b72a"                 style="width: 100.0%; height: 100.0%;">                 Brussels (Armstrong Field) Airport </div>                 ')[0];
+                popup_b61e2b8cd2ea43b280628e6d1428911c.setContent(html_3d043a4a22a8440c8f46b4126c55b72a);
+            
+
+            circle_marker_f17dc12fe3b447218fe17eba5787c1b5.bindPopup(popup_b61e2b8cd2ea43b280628e6d1428911c);
+
+            
+        
+        
+            
+
+            var circle_marker_cc9812903f7d440eb408dad7e5be3e5c = L.circle(
+                [43.4427777777778,-80.2322222222222],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_ab756eb65b1846298e76c05626cf5041 = L.popup({maxWidth: '300'});
+
+            
+                var html_3fe2f3a7e11949139f4197bf2e094b06 = $('         <div id="html_3fe2f3a7e11949139f4197bf2e094b06"                 style="width: 100.0%; height: 100.0%;">                 Cambridge/Reid&#39;s Field Airport </div>                 ')[0];
+                popup_ab756eb65b1846298e76c05626cf5041.setContent(html_3fe2f3a7e11949139f4197bf2e094b06);
+            
+
+            circle_marker_cc9812903f7d440eb408dad7e5be3e5c.bindPopup(popup_ab756eb65b1846298e76c05626cf5041);
+
+            
+        
+        
+            
+
+            var circle_marker_4a7f76fed85444a49eaf259c2a33890a = L.circle(
+                [43.4205555555556,-80.2569444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_c7c1177d4a1a4ac79fb89c37dac602e5 = L.popup({maxWidth: '300'});
+
+            
+                var html_1f7abdf980d8430ba916813ccafe584e = $('         <div id="html_1f7abdf980d8430ba916813ccafe584e"                 style="width: 100.0%; height: 100.0%;">                 Cambridge (Puslinch Lake) Water Aerodrome </div>                 ')[0];
+                popup_c7c1177d4a1a4ac79fb89c37dac602e5.setContent(html_1f7abdf980d8430ba916813ccafe584e);
+            
+
+            circle_marker_4a7f76fed85444a49eaf259c2a33890a.bindPopup(popup_c7c1177d4a1a4ac79fb89c37dac602e5);
+
+            
+        
+        
+            
+
+            var circle_marker_9c485e4c13c14938bc0a39acad7a1048 = L.circle(
+                [43.2855555555556,-81.5083333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_3d4749e578ba472ca4e0254c455b726a = L.popup({maxWidth: '300'});
+
+            
+                var html_8bbbcc89af734188b61b5386d73cad40 = $('         <div id="html_8bbbcc89af734188b61b5386d73cad40"                 style="width: 100.0%; height: 100.0%;">                 Centralia/James T. Field Memorial Aerodrome </div>                 ')[0];
+                popup_3d4749e578ba472ca4e0254c455b726a.setContent(html_8bbbcc89af734188b61b5386d73cad40);
+            
+
+            circle_marker_9c485e4c13c14938bc0a39acad7a1048.bindPopup(popup_3d4749e578ba472ca4e0254c455b726a);
+
+            
+        
+        
+            
+
+            var circle_marker_48d76783b84043a594fc24276e261874 = L.circle(
+                [43.0663888888889,-80.7002777777778],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_89185f931f3246aa8dd1a0888022cf52 = L.popup({maxWidth: '300'});
+
+            
+                var html_da3f3c16f02d49febbc63ad4bdc4dc89 = $('         <div id="html_da3f3c16f02d49febbc63ad4bdc4dc89"                 style="width: 100.0%; height: 100.0%;">                 Curries (Rand Private Airfield) Aerodrome </div>                 ')[0];
+                popup_89185f931f3246aa8dd1a0888022cf52.setContent(html_da3f3c16f02d49febbc63ad4bdc4dc89);
+            
+
+            circle_marker_48d76783b84043a594fc24276e261874.bindPopup(popup_89185f931f3246aa8dd1a0888022cf52);
+
+            
+        
+        
+            
+
+            var circle_marker_a03122cde852407082152c4c36a2cf52 = L.circle(
+                [42.6591666666667,-81.5125],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_8537029adfe14433ac05aa49aa194190 = L.popup({maxWidth: '300'});
+
+            
+                var html_91318a2922e44a0ea8b9278365173b45 = $('         <div id="html_91318a2922e44a0ea8b9278365173b45"                 style="width: 100.0%; height: 100.0%;">                 Dutton Aerodrome </div>                 ')[0];
+                popup_8537029adfe14433ac05aa49aa194190.setContent(html_91318a2922e44a0ea8b9278365173b45);
+            
+
+            circle_marker_a03122cde852407082152c4c36a2cf52.bindPopup(popup_8537029adfe14433ac05aa49aa194190);
+
+            
+        
+        
+            
+
+            var circle_marker_51c69fa9e6b646b9a57034cdb44519ab = L.circle(
+                [43.5919444444444,-80.5122222222222],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_548a7771bddc430c8079f61a228afd8f = L.popup({maxWidth: '300'});
+
+            
+                var html_4ef8dd6bc49a48c3ada634ae5b38b929 = $('         <div id="html_4ef8dd6bc49a48c3ada634ae5b38b929"                 style="width: 100.0%; height: 100.0%;">                 Elmira (East) Airport </div>                 ')[0];
+                popup_548a7771bddc430c8079f61a228afd8f.setContent(html_4ef8dd6bc49a48c3ada634ae5b38b929);
+            
+
+            circle_marker_51c69fa9e6b646b9a57034cdb44519ab.bindPopup(popup_548a7771bddc430c8079f61a228afd8f);
+
+            
+        
+        
+            
+
+            var circle_marker_f3a86d13ddca4450a0110a3f1c003922 = L.circle(
+                [43.5847222222222,-80.6030555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_b374f24e3c4549419dfbee126531b039 = L.popup({maxWidth: '300'});
+
+            
+                var html_606644b518654ae2be11bc29bf7da615 = $('         <div id="html_606644b518654ae2be11bc29bf7da615"                 style="width: 100.0%; height: 100.0%;">                 Elmira Airport </div>                 ')[0];
+                popup_b374f24e3c4549419dfbee126531b039.setContent(html_606644b518654ae2be11bc29bf7da615);
+            
+
+            circle_marker_f3a86d13ddca4450a0110a3f1c003922.bindPopup(popup_b374f24e3c4549419dfbee126531b039);
+
+            
+        
+        
+            
+
+            var circle_marker_77a6f6768bd54f56978bea9146c58854 = L.circle(
+                [43.745,-81.1766666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_403ec0960ee244e1ba44b7e8d0796b5d = L.popup({maxWidth: '300'});
+
+            
+                var html_8715dd3054f444af869cc161d426503e = $('         <div id="html_8715dd3054f444af869cc161d426503e"                 style="width: 100.0%; height: 100.0%;">                 Ethel Airport </div>                 ')[0];
+                popup_403ec0960ee244e1ba44b7e8d0796b5d.setContent(html_8715dd3054f444af869cc161d426503e);
+            
+
+            circle_marker_77a6f6768bd54f56978bea9146c58854.bindPopup(popup_403ec0960ee244e1ba44b7e8d0796b5d);
+
+            
+        
+        
+            
+
+            var circle_marker_98f6d236c27749109f4336d2ba9461b7 = L.circle(
+                [43.7216666666667,-80.3755555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_9e19594f37d54288965b15a96484e56d = L.popup({maxWidth: '300'});
+
+            
+                var html_1858abfee7f54a079148128ff3a9a61f = $('         <div id="html_1858abfee7f54a079148128ff3a9a61f"                 style="width: 100.0%; height: 100.0%;">                 Fergus (Groves Memorial Community Hospital) Heliport </div>                 ')[0];
+                popup_9e19594f37d54288965b15a96484e56d.setContent(html_1858abfee7f54a079148128ff3a9a61f);
+            
+
+            circle_marker_98f6d236c27749109f4336d2ba9461b7.bindPopup(popup_9e19594f37d54288965b15a96484e56d);
+
+            
+        
+        
+            
+
+            var circle_marker_6a85fca2ef654ebe9d86faa858df59cf = L.circle(
+                [43.7286111111111,-80.2830555555555],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_79efd068ceb34adab2c4cfdd6308d92b = L.popup({maxWidth: '300'});
+
+            
+                var html_ade7026b2dad40dc8670338a74661112 = $('         <div id="html_ade7026b2dad40dc8670338a74661112"                 style="width: 100.0%; height: 100.0%;">                 Fergus (Holyoake Airfield) Aerodrome </div>                 ')[0];
+                popup_79efd068ceb34adab2c4cfdd6308d92b.setContent(html_ade7026b2dad40dc8670338a74661112);
+            
+
+            circle_marker_6a85fca2ef654ebe9d86faa858df59cf.bindPopup(popup_79efd068ceb34adab2c4cfdd6308d92b);
+
+            
+        
+        
+            
+
+            var circle_marker_3c7fc8791c224645941c91657d564deb = L.circle(
+                [43.735,-80.4472222222222],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_1aff6282606a4489bf248ad7891556e4 = L.popup({maxWidth: '300'});
+
+            
+                var html_de01e99db56b446ba066d6d29d033b26 = $('         <div id="html_de01e99db56b446ba066d6d29d033b26"                 style="width: 100.0%; height: 100.0%;">                 Fergus (Juergensen Field) Airport </div>                 ')[0];
+                popup_1aff6282606a4489bf248ad7891556e4.setContent(html_de01e99db56b446ba066d6d29d033b26);
+            
+
+            circle_marker_3c7fc8791c224645941c91657d564deb.bindPopup(popup_1aff6282606a4489bf248ad7891556e4);
+
+            
+        
+        
+            
+
+            var circle_marker_ad0ccfde27444fb5915a2a0b77f42469 = L.circle(
+                [43.7419444444444,-80.3852777777778],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_504da6409ab543ddb3b05e6478bebe69 = L.popup({maxWidth: '300'});
+
+            
+                var html_493ce24aa3be4ef1847794381055eecc = $('         <div id="html_493ce24aa3be4ef1847794381055eecc"                 style="width: 100.0%; height: 100.0%;">                 Fergus (Royland Field) Aerodrome </div>                 ')[0];
+                popup_504da6409ab543ddb3b05e6478bebe69.setContent(html_493ce24aa3be4ef1847794381055eecc);
+            
+
+            circle_marker_ad0ccfde27444fb5915a2a0b77f42469.bindPopup(popup_504da6409ab543ddb3b05e6478bebe69);
+
+            
+        
+        
+            
+
+            var circle_marker_9d21cc700eaa4454a162defbd808b7b9 = L.circle(
+                [43.7230555555556,-80.2891666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_6e5daba4809d46cc88d331cec0d1fdd5 = L.popup({maxWidth: '300'});
+
+            
+                var html_1ba2fa738b3847348f0e51a4a8d1cc60 = $('         <div id="html_1ba2fa738b3847348f0e51a4a8d1cc60"                 style="width: 100.0%; height: 100.0%;">                 Fergus (Vodarek Field) Aerodrome </div>                 ')[0];
+                popup_6e5daba4809d46cc88d331cec0d1fdd5.setContent(html_1ba2fa738b3847348f0e51a4a8d1cc60);
+            
+
+            circle_marker_9d21cc700eaa4454a162defbd808b7b9.bindPopup(popup_6e5daba4809d46cc88d331cec0d1fdd5);
+
+            
+        
+        
+            
+
+            var circle_marker_d826cb4789a9402da3ff5390110efab9 = L.circle(
+                [43.8880555555556,-80.9952777777778],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_bda3d1c7996a4db2b3bb10d306fbcb30 = L.popup({maxWidth: '300'});
+
+            
+                var html_ae724c5570944281a4c2c967a19770c5 = $('         <div id="html_ae724c5570944281a4c2c967a19770c5"                 style="width: 100.0%; height: 100.0%;">                 Fordwich Airport </div>                 ')[0];
+                popup_bda3d1c7996a4db2b3bb10d306fbcb30.setContent(html_ae724c5570944281a4c2c967a19770c5);
+            
+
+            circle_marker_d826cb4789a9402da3ff5390110efab9.bindPopup(popup_bda3d1c7996a4db2b3bb10d306fbcb30);
+
+            
+        
+        
+            
+
+            var circle_marker_ee3de56ff4c647a69ead9cde8d25d7a9 = L.circle(
+                [43.86,-80.2886111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_d6baf07b92c843869a407f9580580391 = L.popup({maxWidth: '300'});
+
+            
+                var html_620ed44b32f7447b8aa7ad1abaa62949 = $('         <div id="html_620ed44b32f7447b8aa7ad1abaa62949"                 style="width: 100.0%; height: 100.0%;">                 Grand Valley (Black Field) Aerodrome </div>                 ')[0];
+                popup_d6baf07b92c843869a407f9580580391.setContent(html_620ed44b32f7447b8aa7ad1abaa62949);
+            
+
+            circle_marker_ee3de56ff4c647a69ead9cde8d25d7a9.bindPopup(popup_d6baf07b92c843869a407f9580580391);
+
+            
+        
+        
+            
+
+            var circle_marker_203adf95481449e4929c8fd415251bc8 = L.circle(
+                [43.9763888888889,-80.3852777777778],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_4f678b833b9b4ee28c028e0ad77ca564 = L.popup({maxWidth: '300'});
+
+            
+                var html_723bbbea0d0c4c0c9bca6f9d0055a4cd = $('         <div id="html_723bbbea0d0c4c0c9bca6f9d0055a4cd"                 style="width: 100.0%; height: 100.0%;">                 Grand Valley/Luther Field Aerodrome </div>                 ')[0];
+                popup_4f678b833b9b4ee28c028e0ad77ca564.setContent(html_723bbbea0d0c4c0c9bca6f9d0055a4cd);
+            
+
+            circle_marker_203adf95481449e4929c8fd415251bc8.bindPopup(popup_4f678b833b9b4ee28c028e0ad77ca564);
+
+            
+        
+        
+            
+
+            var circle_marker_7ad5b781ceef4397870fe6fa7164bda7 = L.circle(
+                [43.9625,-80.3541666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_b69ba4cc70964919aec049b8f66ef85d = L.popup({maxWidth: '300'});
+
+            
+                var html_225c08365ea94aa882f0e5b2f69ccd77 = $('         <div id="html_225c08365ea94aa882f0e5b2f69ccd77"                 style="width: 100.0%; height: 100.0%;">                 Grand Valley North Aerodrome </div>                 ')[0];
+                popup_b69ba4cc70964919aec049b8f66ef85d.setContent(html_225c08365ea94aa882f0e5b2f69ccd77);
+            
+
+            circle_marker_7ad5b781ceef4397870fe6fa7164bda7.bindPopup(popup_b69ba4cc70964919aec049b8f66ef85d);
+
+            
+        
+        
+            
+
+            var circle_marker_38034f1aac184f0ca43d5051dbb266ea = L.circle(
+                [43.8747222222222,-80.2866666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_f564696faf29428b820135cb362a37ef = L.popup({maxWidth: '300'});
+
+            
+                var html_8bd5877745b0419bb6acdd628dcfbc02 = $('         <div id="html_8bd5877745b0419bb6acdd628dcfbc02"                 style="width: 100.0%; height: 100.0%;">                 Grand Valley (Martin Field) Aerodrome </div>                 ')[0];
+                popup_f564696faf29428b820135cb362a37ef.setContent(html_8bd5877745b0419bb6acdd628dcfbc02);
+            
+
+            circle_marker_38034f1aac184f0ca43d5051dbb266ea.bindPopup(popup_f564696faf29428b820135cb362a37ef);
+
+            
+        
+        
+            
+
+            var circle_marker_dc8c010693d34a58af22239ea4c5a549 = L.circle(
+                [43.5638888888889,-80.1961111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_1f79e6b38e544fd5ba6cdba45447c325 = L.popup({maxWidth: '300'});
+
+            
+                var html_284d96d43e5a4dfe887ba1650ab23670 = $('         <div id="html_284d96d43e5a4dfe887ba1650ab23670"                 style="width: 100.0%; height: 100.0%;">                 Guelph Airport </div>                 ')[0];
+                popup_1f79e6b38e544fd5ba6cdba45447c325.setContent(html_284d96d43e5a4dfe887ba1650ab23670);
+            
+
+            circle_marker_dc8c010693d34a58af22239ea4c5a549.bindPopup(popup_1f79e6b38e544fd5ba6cdba45447c325);
+
+            
+        
+        
+            
+
+            var circle_marker_f2936b1667944c4c9c876720bd3fe7b0 = L.circle(
+                [43.9791666666667,-80.1772222222222],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_bdc565d3556f4d1481221a626359fd53 = L.popup({maxWidth: '300'});
+
+            
+                var html_369f289f9fa84444b284f9ad6d95438a = $('         <div id="html_369f289f9fa84444b284f9ad6d95438a"                 style="width: 100.0%; height: 100.0%;">                 Laurel/Whittington Aerodrome </div>                 ')[0];
+                popup_bdc565d3556f4d1481221a626359fd53.setContent(html_369f289f9fa84444b284f9ad6d95438a);
+            
+
+            circle_marker_f2936b1667944c4c9c876720bd3fe7b0.bindPopup(popup_bdc565d3556f4d1481221a626359fd53);
+
+            
+        
+        
+            
+
+            var circle_marker_87a2e249df984628931b9d4c2c40daf7 = L.circle(
+                [43.7427777777778,-80.9913888888889],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_ed0273f3ad7644b6bfa9163b1fee6030 = L.popup({maxWidth: '300'});
+
+            
+                var html_e1b146c6c8924493be3e267533185ea5 = $('         <div id="html_e1b146c6c8924493be3e267533185ea5"                 style="width: 100.0%; height: 100.0%;">                 Listowel Airport </div>                 ')[0];
+                popup_ed0273f3ad7644b6bfa9163b1fee6030.setContent(html_e1b146c6c8924493be3e267533185ea5);
+            
+
+            circle_marker_87a2e249df984628931b9d4c2c40daf7.bindPopup(popup_ed0273f3ad7644b6bfa9163b1fee6030);
+
+            
+        
+        
+            
+
+            var circle_marker_5a5f22c020b74d589fb21dafe4b38020 = L.circle(
+                [43.0330555555556,-81.1511111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_7ede02ec426a4e73981a107f9ad81a5b = L.popup({maxWidth: '300'});
+
+            
+                var html_68d4f18c9aca471eaaa99eb149af96bc = $('         <div id="html_68d4f18c9aca471eaaa99eb149af96bc"                 style="width: 100.0%; height: 100.0%;">                 London International Airport (London Airport) </div>                 ')[0];
+                popup_7ede02ec426a4e73981a107f9ad81a5b.setContent(html_68d4f18c9aca471eaaa99eb149af96bc);
+            
+
+            circle_marker_5a5f22c020b74d589fb21dafe4b38020.bindPopup(popup_7ede02ec426a4e73981a107f9ad81a5b);
+
+            
+        
+        
+            
+
+            var circle_marker_31236118114b4c10a9578fa0539d1e6b = L.circle(
+                [43.0127777777778,-81.2730555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_855fafe06c5b41aabc1d1067211cb5dc = L.popup({maxWidth: '300'});
+
+            
+                var html_39bb2bae81144e908c941304eba58e89 = $('         <div id="html_39bb2bae81144e908c941304eba58e89"                 style="width: 100.0%; height: 100.0%;">                 London (University Hospital) Heliport </div>                 ')[0];
+                popup_855fafe06c5b41aabc1d1067211cb5dc.setContent(html_39bb2bae81144e908c941304eba58e89);
+            
+
+            circle_marker_31236118114b4c10a9578fa0539d1e6b.bindPopup(popup_855fafe06c5b41aabc1d1067211cb5dc);
+
+            
+        
+        
+            
+
+            var circle_marker_84c8298c496f49feb1edcf9f291271af = L.circle(
+                [42.9586111111111,-81.2258333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_00f56fe0538c49bd96122125f07c54b6 = L.popup({maxWidth: '300'});
+
+            
+                var html_06cde8e42b57428b8c845ad94a7f9f9f = $('         <div id="html_06cde8e42b57428b8c845ad94a7f9f9f"                 style="width: 100.0%; height: 100.0%;">                 London (Victoria Hospital) Heliport </div>                 ')[0];
+                popup_00f56fe0538c49bd96122125f07c54b6.setContent(html_06cde8e42b57428b8c845ad94a7f9f9f);
+            
+
+            circle_marker_84c8298c496f49feb1edcf9f291271af.bindPopup(popup_00f56fe0538c49bd96122125f07c54b6);
+
+            
+        
+        
+            
+
+            var circle_marker_1ca7c8a2533445108024f8da00b503d6 = L.circle(
+                [43.0683333333333,-81.1255555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_3d01e202e2804494865ac4ed152e15fd = L.popup({maxWidth: '300'});
+
+            
+                var html_c18944ea322e4c43af6b5d7a364a8643 = $('         <div id="html_c18944ea322e4c43af6b5d7a364a8643"                 style="width: 100.0%; height: 100.0%;">                 London/Chapeskie Field Airport </div>                 ')[0];
+                popup_3d01e202e2804494865ac4ed152e15fd.setContent(html_c18944ea322e4c43af6b5d7a364a8643);
+            
+
+            circle_marker_1ca7c8a2533445108024f8da00b503d6.bindPopup(popup_3d01e202e2804494865ac4ed152e15fd);
+
+            
+        
+        
+            
+
+            var circle_marker_cf593395b53d4c9b9daef7de03a57785 = L.circle(
+                [43.1633333333333,-81.4125],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_603f181828824347bdae46cf03d5158c = L.popup({maxWidth: '300'});
+
+            
+                var html_d8ef236ad7564cd6847413743a3bbcd6 = $('         <div id="html_d8ef236ad7564cd6847413743a3bbcd6"                 style="width: 100.0%; height: 100.0%;">                 Lucan Airport </div>                 ')[0];
+                popup_603f181828824347bdae46cf03d5158c.setContent(html_d8ef236ad7564cd6847413743a3bbcd6);
+            
+
+            circle_marker_cf593395b53d4c9b9daef7de03a57785.bindPopup(popup_603f181828824347bdae46cf03d5158c);
+
+            
+        
+        
+            
+
+            var circle_marker_f9f3fdf2ef0c490c93775155cb0c061a = L.circle(
+                [43.9677777777778,-81.4933333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_c83ca837933b47b9a1dbc89cf52d454f = L.popup({maxWidth: '300'});
+
+            
+                var html_38bc41544886436ea210b97a48de4d46 = $('         <div id="html_38bc41544886436ea210b97a48de4d46"                 style="width: 100.0%; height: 100.0%;">                 Lucknow Airpark </div>                 ')[0];
+                popup_c83ca837933b47b9a1dbc89cf52d454f.setContent(html_38bc41544886436ea210b97a48de4d46);
+            
+
+            circle_marker_f9f3fdf2ef0c490c93775155cb0c061a.bindPopup(popup_c83ca837933b47b9a1dbc89cf52d454f);
+
+            
+        
+        
+            
+
+            var circle_marker_adfec28c1573475e8fa843d523170a80 = L.circle(
+                [42.8241666666667,-81.5486111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_962cb2011ca749808af564ad57514855 = L.popup({maxWidth: '300'});
+
+            
+                var html_7edf39223d074d8a975d5b01631a1578 = $('         <div id="html_7edf39223d074d8a975d5b01631a1578"                 style="width: 100.0%; height: 100.0%;">                 Melbourne Aerodrome </div>                 ')[0];
+                popup_962cb2011ca749808af564ad57514855.setContent(html_7edf39223d074d8a975d5b01631a1578);
+            
+
+            circle_marker_adfec28c1573475e8fa843d523170a80.bindPopup(popup_962cb2011ca749808af564ad57514855);
+
+            
+        
+        
+            
+
+            var circle_marker_6698dcdce52147bbb2c0ffef8c19ad8d = L.circle(
+                [43.9741666666667,-80.7375],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_6b4338241696418bb72d092285c20969 = L.popup({maxWidth: '300'});
+
+            
+                var html_5a2cdf1aef884f5d82484d25f8bb8f89 = $('         <div id="html_5a2cdf1aef884f5d82484d25f8bb8f89"                 style="width: 100.0%; height: 100.0%;">                 Mount Forest (Louise Marshall Hospital) Heliport </div>                 ')[0];
+                popup_6b4338241696418bb72d092285c20969.setContent(html_5a2cdf1aef884f5d82484d25f8bb8f89);
+            
+
+            circle_marker_6698dcdce52147bbb2c0ffef8c19ad8d.bindPopup(popup_6b4338241696418bb72d092285c20969);
+
+            
+        
+        
+            
+
+            var circle_marker_26d1ab3e51c54726b331b2c797fedc0d = L.circle(
+                [42.8475,-80.3952777777778],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_8b2a623ade4045f480c5a6af104f1f4f = L.popup({maxWidth: '300'});
+
+            
+                var html_699b1bca74834b96be63f4d550071cca = $('         <div id="html_699b1bca74834b96be63f4d550071cca"                 style="width: 100.0%; height: 100.0%;">                 Nixon Airport </div>                 ')[0];
+                popup_8b2a623ade4045f480c5a6af104f1f4f.setContent(html_699b1bca74834b96be63f4d550071cca);
+            
+
+            circle_marker_26d1ab3e51c54726b331b2c797fedc0d.bindPopup(popup_8b2a623ade4045f480c5a6af104f1f4f);
+
+            
+        
+        
+            
+
+            var circle_marker_56b389c8d87e41279cfa5eca4bd93d12 = L.circle(
+                [43.875,-80.1808333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_154f171ac29447709174c2f88456337e = L.popup({maxWidth: '300'});
+
+            
+                var html_4b813d9d63c34aef9cf451d787b5dc53 = $('         <div id="html_4b813d9d63c34aef9cf451d787b5dc53"                 style="width: 100.0%; height: 100.0%;">                 Orangeville/Brundle Field Aerodrome </div>                 ')[0];
+                popup_154f171ac29447709174c2f88456337e.setContent(html_4b813d9d63c34aef9cf451d787b5dc53);
+            
+
+            circle_marker_56b389c8d87e41279cfa5eca4bd93d12.bindPopup(popup_154f171ac29447709174c2f88456337e);
+
+            
+        
+        
+            
+
+            var circle_marker_9ccbef2d242f4ac2a0765a225b65b8a6 = L.circle(
+                [43.92,-80.0755555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_7fb9560514634e9181d804c091f2e756 = L.popup({maxWidth: '300'});
+
+            
+                var html_b8357d1f06bd477b900dfcfa1fe7f533 = $('         <div id="html_b8357d1f06bd477b900dfcfa1fe7f533"                 style="width: 100.0%; height: 100.0%;">                 Orangeville (Headwaters Healthecare Centre) Heliport </div>                 ')[0];
+                popup_7fb9560514634e9181d804c091f2e756.setContent(html_b8357d1f06bd477b900dfcfa1fe7f533);
+            
+
+            circle_marker_9ccbef2d242f4ac2a0765a225b65b8a6.bindPopup(popup_7fb9560514634e9181d804c091f2e756);
+
+            
+        
+        
+            
+
+            var circle_marker_9966452bd58745b19231e135f49d795d = L.circle(
+                [43.9502777777778,-80.2058333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_4b33efd59d004ea890ebfae9e5024d26 = L.popup({maxWidth: '300'});
+
+            
+                var html_83e6aa24e92d4100b4f50718a1a4cb6e = $('         <div id="html_83e6aa24e92d4100b4f50718a1a4cb6e"                 style="width: 100.0%; height: 100.0%;">                 Orangeville/Laurel Aerodrome </div>                 ')[0];
+                popup_4b33efd59d004ea890ebfae9e5024d26.setContent(html_83e6aa24e92d4100b4f50718a1a4cb6e);
+            
+
+            circle_marker_9966452bd58745b19231e135f49d795d.bindPopup(popup_4b33efd59d004ea890ebfae9e5024d26);
+
+            
+        
+        
+            
+
+            var circle_marker_02fbce4f6bdb4d81a0d894a4518754b3 = L.circle(
+                [43.9586111111111,-80.155],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_daaaaa113228456da402de935b8c7d98 = L.popup({maxWidth: '300'});
+
+            
+                var html_16aa1301601a4847a2559fc0f2c8a789 = $('         <div id="html_16aa1301601a4847a2559fc0f2c8a789"                 style="width: 100.0%; height: 100.0%;">                 Orangeville/Castlewood Field Aerodrome </div>                 ')[0];
+                popup_daaaaa113228456da402de935b8c7d98.setContent(html_16aa1301601a4847a2559fc0f2c8a789);
+            
+
+            circle_marker_02fbce4f6bdb4d81a0d894a4518754b3.bindPopup(popup_daaaaa113228456da402de935b8c7d98);
+
+            
+        
+        
+            
+
+            var circle_marker_cb5a14438c4a48b6a1d1d5eca5dc097a = L.circle(
+                [43.775,-80.2280555555556],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_67ad3a5be45d440db6ab85dd4854c4e3 = L.popup({maxWidth: '300'});
+
+            
+                var html_b5ad9186777e4ceaabd52ae71453124b = $('         <div id="html_b5ad9186777e4ceaabd52ae71453124b"                 style="width: 100.0%; height: 100.0%;">                 Orton/Smith Field Airport </div>                 ')[0];
+                popup_67ad3a5be45d440db6ab85dd4854c4e3.setContent(html_b5ad9186777e4ceaabd52ae71453124b);
+            
+
+            circle_marker_cb5a14438c4a48b6a1d1d5eca5dc097a.bindPopup(popup_67ad3a5be45d440db6ab85dd4854c4e3);
+
             
         
+        
             
 
-            var marker_f8cde2066f2448f2a50f272c9f18858f = L.marker(
-                [50.03333333333333,-79.01],
+            var circle_marker_8f05b24be07e48b9a4246d2e7f40f627 = L.circle(
+                [43.8383333333333,-80.8419444444444],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_fc72c3d9cabd44fdaf0f7092f3dd2752 = L.popup({maxWidth: '300'});
+
             
+                var html_dc5007bfcce44dd7a6c4d70dbec108bb = $('         <div id="html_dc5007bfcce44dd7a6c4d70dbec108bb"                 style="width: 100.0%; height: 100.0%;">                 Palmerston (District Hospital) Heliport </div>                 ')[0];
+                popup_fc72c3d9cabd44fdaf0f7092f3dd2752.setContent(html_dc5007bfcce44dd7a6c4d70dbec108bb);
+            
+
+            circle_marker_8f05b24be07e48b9a4246d2e7f40f627.bindPopup(popup_fc72c3d9cabd44fdaf0f7092f3dd2752);
+
+            
         
+        
             
 
-            var marker_d4117de962374569bb42d9303d75f727 = L.marker(
-                [50.04666666666667,-79.01],
+            var circle_marker_2c667438427f40f19e3e82bc663a7f27 = L.circle(
+                [43.8536111111111,-80.7802777777778],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
             
+            var popup_bff2bcd536d04beabd3bcb1e020ea95f = L.popup({maxWidth: '300'});
+
+            
+                var html_afcca49c1ec94150a4494b671e5046dc = $('         <div id="html_afcca49c1ec94150a4494b671e5046dc"                 style="width: 100.0%; height: 100.0%;">                 Palmerston Airport </div>                 ')[0];
+                popup_bff2bcd536d04beabd3bcb1e020ea95f.setContent(html_afcca49c1ec94150a4494b671e5046dc);
+            
+
+            circle_marker_2c667438427f40f19e3e82bc663a7f27.bindPopup(popup_bff2bcd536d04beabd3bcb1e020ea95f);
+
+            
         
+        
             
 
-            var marker_9475f56acdab484882142e1356cfdafa = L.marker(
-                [50.06,-79.02333333333333],
+            var circle_marker_daa8236ae0664d4296fb420c268b9859 = L.circle(
+                [43.3058333333333,-80.5486111111111],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_7b8ab332fc444cfebbc463ae69374d14 = L.popup({maxWidth: '300'});
+
+            
+                var html_c177c1cb55cf4c36b633007156e55d36 = $('         <div id="html_c177c1cb55cf4c36b633007156e55d36"                 style="width: 100.0%; height: 100.0%;">                 Plattsville (Lubitz Flying Field) Aerodrome </div>                 ')[0];
+                popup_7b8ab332fc444cfebbc463ae69374d14.setContent(html_c177c1cb55cf4c36b633007156e55d36);
+            
+
+            circle_marker_daa8236ae0664d4296fb420c268b9859.bindPopup(popup_7b8ab332fc444cfebbc463ae69374d14);
+
             
         
+        
             
 
-            var marker_0a6606f172344cd6b2b6e86238e94265 = L.marker(
-                [50.07333333333333,-79.03666666666666],
+            var circle_marker_0d5dea6ec2534371bdd404144d12976b = L.circle(
+                [43.4527777777778,-80.5036111111111],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_81b8d53666ce4e50b34d324e37c7e07b = L.popup({maxWidth: '300'});
+
+            
+                var html_3b42c42a0b884fb398ce8ac82d5efb38 = $('         <div id="html_3b42c42a0b884fb398ce8ac82d5efb38"                 style="width: 100.0%; height: 100.0%;">                 Kitchener-Waterloo (Grand River Hospital) Heliport </div>                 ')[0];
+                popup_81b8d53666ce4e50b34d324e37c7e07b.setContent(html_3b42c42a0b884fb398ce8ac82d5efb38);
+            
+
+            circle_marker_0d5dea6ec2534371bdd404144d12976b.bindPopup(popup_81b8d53666ce4e50b34d324e37c7e07b);
+
             
         
+        
             
 
-            var marker_aef15edc97bd4a7ead97a09c2bcbc002 = L.marker(
-                [50.086666666666666,-79.05],
+            var circle_marker_91320cca8a4c42c1bd375045618c6829 = L.circle(
+                [43.4588888888889,-80.3775],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_4fe10eda4709431f9c88bd1032cb9c93 = L.popup({maxWidth: '300'});
+
             
+                var html_dbd45f805c5c4b00953a33ae3437a367 = $('         <div id="html_dbd45f805c5c4b00953a33ae3437a367"                 style="width: 100.0%; height: 100.0%;">                 Region of Waterloo International Airport </div>                 ')[0];
+                popup_4fe10eda4709431f9c88bd1032cb9c93.setContent(html_dbd45f805c5c4b00953a33ae3437a367);
+            
+
+            circle_marker_91320cca8a4c42c1bd375045618c6829.bindPopup(popup_4fe10eda4709431f9c88bd1032cb9c93);
+
+            
         
+        
             
 
-            var marker_fabb78912ed04168ba98623b7aaaf63a = L.marker(
-                [50.1,-79.06333333333333],
+            var circle_marker_2e5bc5dc4626425caed8450d422ab3cd = L.circle(
+                [43.3222222222222,-80.1763888888889],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
             
+            var popup_0943a3ef84bc4c3eaf7956e1999bfb89 = L.popup({maxWidth: '300'});
+
+            
+                var html_f27539d1a63a4cd48123d2be4da18bfc = $('         <div id="html_f27539d1a63a4cd48123d2be4da18bfc"                 style="width: 100.0%; height: 100.0%;">                 Rockton Airport </div>                 ')[0];
+                popup_0943a3ef84bc4c3eaf7956e1999bfb89.setContent(html_f27539d1a63a4cd48123d2be4da18bfc);
+            
+
+            circle_marker_2e5bc5dc4626425caed8450d422ab3cd.bindPopup(popup_0943a3ef84bc4c3eaf7956e1999bfb89);
+
+            
         
+        
             
 
-            var marker_d2580c3286ef41ecb433f42aa1390cf9 = L.marker(
-                [50.11333333333333,-79.07666666666667],
+            var circle_marker_585ecaabf3804d8ab360c27bc14c16ad = L.circle(
+                [43.3772222222222,-81.5041666666667],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
+            var popup_009f5899d09a45d2b23129328cd9de96 = L.popup({maxWidth: '300'});
 
-            var marker_d82ddbd5915846aca050a29cdc461912 = L.marker(
-                [50.126666666666665,-79.09],
+            
+                var html_6faff21d63904c609dbe87d920ba3b2f = $('         <div id="html_6faff21d63904c609dbe87d920ba3b2f"                 style="width: 100.0%; height: 100.0%;">                 Sexsmith/Exeter Airport </div>                 ')[0];
+                popup_009f5899d09a45d2b23129328cd9de96.setContent(html_6faff21d63904c609dbe87d920ba3b2f);
+            
+
+            circle_marker_585ecaabf3804d8ab360c27bc14c16ad.bindPopup(popup_009f5899d09a45d2b23129328cd9de96);
+
+            
+        
+        
+            
+
+            var circle_marker_0425406757a04ef1952bcd54237de9b6 = L.circle(
+                [42.8466666666667,-80.3197222222222],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_a309eb78160b4467a38ecf3870776d96 = L.popup({maxWidth: '300'});
+
+            
+                var html_378852c967ce44a78a80b34bc2675d89 = $('         <div id="html_378852c967ce44a78a80b34bc2675d89"                 style="width: 100.0%; height: 100.0%;">                 Simco (Norfolk General Hospital) Heliport </div>                 ')[0];
+                popup_a309eb78160b4467a38ecf3870776d96.setContent(html_378852c967ce44a78a80b34bc2675d89);
+            
+
+            circle_marker_0425406757a04ef1952bcd54237de9b6.bindPopup(popup_a309eb78160b4467a38ecf3870776d96);
+
             
         
+        
             
 
-            var marker_722504dc5d874fd1b36691e8024326bc = L.marker(
-                [50.14,-79.10333333333334],
+            var circle_marker_a857cfa92be1465bbe5c719193a1bfcd = L.circle(
+                [42.8191666666667,-80.2658333333333],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_3a1a4cdb99604b55ad1bc295fbd07558 = L.popup({maxWidth: '300'});
+
             
+                var html_fec2a4b92b064f71b7f2ff8c858b6cfe = $('         <div id="html_fec2a4b92b064f71b7f2ff8c858b6cfe"                 style="width: 100.0%; height: 100.0%;">                 Simcoe (Dennison Field) Airport </div>                 ')[0];
+                popup_3a1a4cdb99604b55ad1bc295fbd07558.setContent(html_fec2a4b92b064f71b7f2ff8c858b6cfe);
+            
+
+            circle_marker_a857cfa92be1465bbe5c719193a1bfcd.bindPopup(popup_3a1a4cdb99604b55ad1bc295fbd07558);
+
+            
         
+        
             
 
-            var marker_c146c5a798d540cfa3e6618b376485c4 = L.marker(
-                [50.153333333333336,-79.11666666666666],
+            var circle_marker_52619815d95d45aa9dfc4cca0383de98 = L.circle(
+                [42.77,-81.1108333333333],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
             
+            var popup_c83f0ef4abf749e4a214fa3e4c42608f = L.popup({maxWidth: '300'});
+
+            
+                var html_8a0244ab129343bc84868138e2268f74 = $('         <div id="html_8a0244ab129343bc84868138e2268f74"                 style="width: 100.0%; height: 100.0%;">                 St. Thomas Municipal Airport </div>                 ')[0];
+                popup_c83f0ef4abf749e4a214fa3e4c42608f.setContent(html_8a0244ab129343bc84868138e2268f74);
+            
+
+            circle_marker_52619815d95d45aa9dfc4cca0383de98.bindPopup(popup_c83f0ef4abf749e4a214fa3e4c42608f);
+
+            
         
+        
             
 
-            var marker_3a005a5063e94230998e8879ba0931a4 = L.marker(
-                [50.166666666666664,-79.13],
+            var circle_marker_7945c48434d849ec9bc85eab5d030b03 = L.circle(
+                [43.4155555555556,-80.9344444444445],
+                7000,
                 {
-                    icon: new L.Icon.Default()
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_f0a1aa5d027a4d5287e3330c91added7 = L.popup({maxWidth: '300'});
+
+            
+                var html_f8477f524db445a79fdc665aa9e276d3 = $('         <div id="html_f8477f524db445a79fdc665aa9e276d3"                 style="width: 100.0%; height: 100.0%;">                 Stratford Municipal Airport </div>                 ')[0];
+                popup_f0a1aa5d027a4d5287e3330c91added7.setContent(html_f8477f524db445a79fdc665aa9e276d3);
+            
+
+            circle_marker_7945c48434d849ec9bc85eab5d030b03.bindPopup(popup_f0a1aa5d027a4d5287e3330c91added7);
+
+            
+        
+        
+            
+
+            var circle_marker_81b28d66cc114e76bb887d6832fd8e8b = L.circle(
+                [43.9944444444444,-81.2936111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_e93247346aa64243a2dceae67ab39673 = L.popup({maxWidth: '300'});
+
+            
+                var html_a44a8cfba09a498ca3c6c9d8e86a6e40 = $('         <div id="html_a44a8cfba09a498ca3c6c9d8e86a6e40"                 style="width: 100.0%; height: 100.0%;">                 Teeswater (Dent Field) Aerodrome </div>                 ')[0];
+                popup_e93247346aa64243a2dceae67ab39673.setContent(html_a44a8cfba09a498ca3c6c9d8e86a6e40);
+            
+
+            circle_marker_81b28d66cc114e76bb887d6832fd8e8b.bindPopup(popup_e93247346aa64243a2dceae67ab39673);
+
+            
+        
+        
+            
+
+            var circle_marker_4f38ff03a8b249f9b3236eb5a333b81e = L.circle(
+                [43.9483333333333,-81.2719444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_c9c97ca74f6248b1aedd245542a02030 = L.popup({maxWidth: '300'});
+
+            
+                var html_330444f6ef0444cbb58f2dfd2547816d = $('         <div id="html_330444f6ef0444cbb58f2dfd2547816d"                 style="width: 100.0%; height: 100.0%;">                 Teeswater (Thompson Field) Airport </div>                 ')[0];
+                popup_c9c97ca74f6248b1aedd245542a02030.setContent(html_330444f6ef0444cbb58f2dfd2547816d);
+            
+
+            circle_marker_4f38ff03a8b249f9b3236eb5a333b81e.bindPopup(popup_c9c97ca74f6248b1aedd245542a02030);
+
+            
+        
+        
+            
+
+            var circle_marker_dec905abe47a440c928ac453b70d4d89 = L.circle(
+                [43.1083333333333,-81.0191666666667],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_4209cfa2fb114c79878fa8362d2e30e4 = L.popup({maxWidth: '300'});
+
+            
+                var html_47de0a1b06874e63b68d45d53028c399 = $('         <div id="html_47de0a1b06874e63b68d45d53028c399"                 style="width: 100.0%; height: 100.0%;">                 Thamesford (Harydale Farms) Aerodrome </div>                 ')[0];
+                popup_4209cfa2fb114c79878fa8362d2e30e4.setContent(html_47de0a1b06874e63b68d45d53028c399);
+            
+
+            circle_marker_dec905abe47a440c928ac453b70d4d89.bindPopup(popup_4209cfa2fb114c79878fa8362d2e30e4);
+
+            
+        
+        
+            
+
+            var circle_marker_1745e02e98c74d53a55aaacd724a2f41 = L.circle(
+                [42.9269444444444,-80.7497222222222],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_1aab6f1c76984c71a073891e59550152 = L.popup({maxWidth: '300'});
+
+            
+                var html_9b5c2eadadbf4e00a0ef4a273ea6df84 = $('         <div id="html_9b5c2eadadbf4e00a0ef4a273ea6df84"                 style="width: 100.0%; height: 100.0%;">                 Tillsonburg Airport </div>                 ')[0];
+                popup_1aab6f1c76984c71a073891e59550152.setContent(html_9b5c2eadadbf4e00a0ef4a273ea6df84);
+            
+
+            circle_marker_1745e02e98c74d53a55aaacd724a2f41.bindPopup(popup_1aab6f1c76984c71a073891e59550152);
+
+            
+        
+        
+            
+
+            var circle_marker_4faa2efcb73a47ffa82956da4dbe90b5 = L.circle(
+                [43.8963888888889,-81.3363888888889],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_9ba046e4f6ca46a0b44c98d9f13bc782 = L.popup({maxWidth: '300'});
+
+            
+                var html_d44310be461e4d7c9af0df25e7d5af95 = $('         <div id="html_d44310be461e4d7c9af0df25e7d5af95"                 style="width: 100.0%; height: 100.0%;">                 Wingham (Inglis Field) Aerodrome </div>                 ')[0];
+                popup_9ba046e4f6ca46a0b44c98d9f13bc782.setContent(html_d44310be461e4d7c9af0df25e7d5af95);
+            
+
+            circle_marker_4faa2efcb73a47ffa82956da4dbe90b5.bindPopup(popup_9ba046e4f6ca46a0b44c98d9f13bc782);
+
+            
+        
+        
+            
+
+            var circle_marker_5e860feeacaf43a191ee5b00fc050c7c = L.circle(
+                [43.8675,-81.2986111111111],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_5416330103c543e3a87bbb7b62965234 = L.popup({maxWidth: '300'});
+
+            
+                var html_331ec57aabe74cdaab8f19dd18981bec = $('         <div id="html_331ec57aabe74cdaab8f19dd18981bec"                 style="width: 100.0%; height: 100.0%;">                 Wingham/Richard W. LeVan Aerodrome </div>                 ')[0];
+                popup_5416330103c543e3a87bbb7b62965234.setContent(html_331ec57aabe74cdaab8f19dd18981bec);
+            
+
+            circle_marker_5e860feeacaf43a191ee5b00fc050c7c.bindPopup(popup_5416330103c543e3a87bbb7b62965234);
+
+            
+        
+        
+            
+
+            var circle_marker_9763dce8f2b84c05b14419b75524f92d = L.circle(
+                [43.1097222222222,-80.8208333333333],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
+                    }
+                )
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
+            
+        
+            
+            var popup_e0183daa6bc64ca1aebbc90054f99ceb = L.popup({maxWidth: '300'});
+
+            
+                var html_6a8c314886c346c2b0abc7fac1366b1f = $('         <div id="html_6a8c314886c346c2b0abc7fac1366b1f"                 style="width: 100.0%; height: 100.0%;">                 Woodstock Airport </div>                 ')[0];
+                popup_e0183daa6bc64ca1aebbc90054f99ceb.setContent(html_6a8c314886c346c2b0abc7fac1366b1f);
+            
+
+            circle_marker_9763dce8f2b84c05b14419b75524f92d.bindPopup(popup_e0183daa6bc64ca1aebbc90054f99ceb);
+
+            
+        
+        
+            
+
+            var circle_marker_ce23f8bcb99540e1b95b00678a393f68 = L.circle(
+                [43.1055555555556,-80.7544444444444],
+                7000,
+                {
+                    color: '#fa0b0b',
+                    fillColor: '#fa0b0b',
+                    fillOpacity: 0.6
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
+        
+            
+            var popup_735aa8f4e4624fdd82418fa3639666fb = L.popup({maxWidth: '300'});
+
+            
+                var html_9b62500c3a0f4b6fadf9c5074eb35f6a = $('         <div id="html_9b62500c3a0f4b6fadf9c5074eb35f6a"                 style="width: 100.0%; height: 100.0%;">                 Woodstock (Hospital) Heliport </div>                 ')[0];
+                popup_735aa8f4e4624fdd82418fa3639666fb.setContent(html_9b62500c3a0f4b6fadf9c5074eb35f6a);
+            
+
+            circle_marker_ce23f8bcb99540e1b95b00678a393f68.bindPopup(popup_735aa8f4e4624fdd82418fa3639666fb);
+
+            
+        
         
             
 
-            var marker_aa79bec6b29a4bb58e1f2210126d568e = L.marker(
-                [50.18,-79.14333333333333],
+            var marker_b3c5f7398a4640ac8a23baa2c2e4d734 = L.marker(
+                [43.01,-80.6],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_6616204f7fac475db9215ee3e0b5110a = L.marker(
-                [50.193333333333335,-79.14333333333333],
+            var marker_1fcf2623a6394daf847048a66f5d3eb1 = L.marker(
+                [43.02,-80.6],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_26c28f8d80f549148926187d426f268e = L.marker(
-                [50.20666666666666,-79.14333333333333],
+            var marker_bee614c4205b4888aab999039316e65d = L.marker(
+                [43.03,-80.6],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_51bd8ae3403443e3aa4aef3e18223be3 = L.marker(
-                [50.22,-79.14333333333333],
+            var marker_9ae0902963694499955838f72ff05cd1 = L.marker(
+                [43.04,-80.59],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_55bcbacc0eec44bba955cfd97e6930ef = L.marker(
-                [50.233333333333334,-79.14333333333333],
+            var marker_c9241b9984504b6a919e5ee8bc158d94 = L.marker(
+                [43.05,-80.59],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_e00b20588eb6474cb01940f270c6dc13 = L.marker(
-                [50.24666666666667,-79.14333333333333],
+            var marker_318a1e86190c41d4b164c67980bf3302 = L.marker(
+                [43.06,-80.58],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_30d081c73aa04ef9946db16a8b89f294 = L.marker(
-                [50.26,-79.14333333333333],
+            var marker_7ac461a4079b491e9f27ddc9f225534d = L.marker(
+                [43.07,-80.58],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_1761780a01474f7c835e35b0afde5b26 = L.marker(
-                [50.27333333333333,-79.14333333333333],
+            var marker_02ffa718e3414fc6865ffe24146fc745 = L.marker(
+                [43.08,-80.59],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_45f0417b0ec5440eae53b859436d0690 = L.marker(
-                [50.28666666666667,-79.14333333333333],
+            var marker_9ff65832f31f421da30e5ec34a746094 = L.marker(
+                [43.09,-80.59],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_fefe31b958af459c94c79259de25194b = L.marker(
-                [50.3,-79.15666666666667],
+            var marker_8fcac33313264f4888d84a4c30ddefd5 = L.marker(
+                [43.1,-80.59],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_fc6a49d9e6ff42e1a327996bb4797f20 = L.marker(
-                [50.31333333333333,-79.17],
+            var marker_fdc07558977b4c57bc33d9390b14b55b = L.marker(
+                [43.11,-80.6],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_6036e5ae924e4564b98e0ca93106d7f9 = L.marker(
-                [50.32666666666667,-79.18333333333334],
+            var marker_8fdfdc4f7b4c4893b0259550730840c7 = L.marker(
+                [43.12,-80.61],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_9a6f9ab3327a46708f4a7d0fcda615cb = L.marker(
-                [50.34,-79.19666666666667],
+            var marker_3152732280f04b968947feb5f694f394 = L.marker(
+                [43.13,-80.61999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_e18840b71f554a0e8f5b57d58b224473 = L.marker(
-                [50.35333333333333,-79.21],
+            var marker_963d274b559743d9b49ea164c4360920 = L.marker(
+                [43.14,-80.63],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_8bdd74b89cd94a5ca8aa03c54bd76bdd = L.marker(
-                [50.36666666666667,-79.22333333333333],
+            var marker_83fcaf0aa7ee4dc6a430d50f0f6d1ffa = L.marker(
+                [43.15,-80.64],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_d4c729b4cf3b452b8634039e2c29a37c = L.marker(
-                [50.38,-79.23666666666666],
+            var marker_0e4a97f0c507493b9cc3dadaa9cfd57c = L.marker(
+                [43.16,-80.64999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_a37c6e74c0a6443c9a1429bf9d749f07 = L.marker(
-                [50.39333333333333,-79.25],
+            var marker_f340bb24a02b49bcac2e04810a1ad768 = L.marker(
+                [43.17,-80.66],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_58b178f35b3945219a4c8a6ededd0af8 = L.marker(
-                [50.406666666666666,-79.26333333333334],
+            var marker_6ff01611ca724c9fae968a4907a5f905 = L.marker(
+                [43.18,-80.67],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_f931d668059947a2a6bf4fc15cf27086 = L.marker(
-                [50.42,-79.27666666666667],
+            var marker_08e1c72a5ed64107a1f0cce6aa98ddd4 = L.marker(
+                [43.19,-80.67999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_b966ffbaa5724317ac885d9ea6ad944b = L.marker(
-                [50.43333333333333,-79.29],
+            var marker_f8cbe01327234a30a2f645311ba90fbc = L.marker(
+                [43.2,-80.69],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_b8cce666b5df4a8d8a6aa50a82e88363 = L.marker(
-                [50.446666666666665,-79.30333333333333],
+            var marker_3863fa8682334715b76ea2e2b85a01b3 = L.marker(
+                [43.21,-80.7],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_8881af44a4eb473db777016189a797ba = L.marker(
-                [50.46,-79.31666666666666],
+            var marker_0752ba8dbea940d79fa083ed411e20da = L.marker(
+                [43.22,-80.71],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_96ef0cd55c264e04b16f14520f99ac44 = L.marker(
-                [50.473333333333336,-79.33],
+            var marker_62b6ed4746e2457abdc04e4f76690e45 = L.marker(
+                [43.23,-80.72],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_342d030266c8451589cb4b4a8ce09102 = L.marker(
-                [50.486666666666665,-79.34333333333333],
+            var marker_84963b610e4c4d63857ec87527257449 = L.marker(
+                [43.24,-80.73],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_d08cc91d66654a4a9820bd6e80293f5c = L.marker(
-                [50.5,-79.35666666666667],
+            var marker_5c4753b0ea854e3ebc65cdeca965aed5 = L.marker(
+                [43.25,-80.74],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_f113665344324d7ea409240489f0cf3a = L.marker(
-                [50.513333333333335,-79.35666666666667],
+            var marker_d253a1dba9c84341a4d879d4ca8160b1 = L.marker(
+                [43.26,-80.75],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_d6d8b5bcd56e4b6585b1a39af808b33e = L.marker(
-                [50.526666666666664,-79.35666666666667],
+            var marker_d2d1cb7181a74e43b4d6594bd3efce15 = L.marker(
+                [43.27,-80.75999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_9e440c48c5444b39810a014917e48721 = L.marker(
-                [50.54,-79.35666666666667],
+            var marker_7f72d14d158a45e58d30af88f397c035 = L.marker(
+                [43.28,-80.77],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_8a4ce4588143492b9fffd8215ab3030c = L.marker(
-                [50.553333333333335,-79.35666666666667],
+            var marker_f063ec64b231474bbfd3d9733d607887 = L.marker(
+                [43.29,-80.78],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_4f3b7eaef54c48438aa23ba2225b14a2 = L.marker(
-                [50.56666666666667,-79.35666666666667],
+            var marker_a8c03f0962bc4e948a7c8d0cba95e232 = L.marker(
+                [43.3,-80.78999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_33552918c51940919541a2dcb27ff2a1 = L.marker(
-                [50.58,-79.35666666666667],
+            var marker_f0bbdd3de68a4a0e897f4716a04246e7 = L.marker(
+                [43.31,-80.8],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_d815e85b74354daa91c9dc2d49d3164d = L.marker(
-                [50.593333333333334,-79.35666666666667],
+            var marker_f640e38a007a4dbd90dbcb765c4b9b3e = L.marker(
+                [43.32,-80.81],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_05c1e94a0ee741869d3be9483fbb7474 = L.marker(
-                [50.60666666666667,-79.35666666666667],
+            var marker_5d0399b730604cda99544a1e94116286 = L.marker(
+                [43.33,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_dd52d0657adc4866bb60b3fb6a52423f = L.marker(
-                [50.62,-79.35666666666667],
+            var marker_23500a2666a04b90a037985df57e8f5b = L.marker(
+                [43.34,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_0eeadb1054d448e8af683f7934fda141 = L.marker(
-                [50.63333333333333,-79.35666666666667],
+            var marker_af340e133e5f4eab9590e22c39bd8c45 = L.marker(
+                [43.35,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_cd9b2f23078f43ffaab7c12310ae86c1 = L.marker(
-                [50.64666666666667,-79.37],
+            var marker_dcac0a1233794ea6939f5e6a77f1edef = L.marker(
+                [43.36,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_5e3e34a8719546d6862162857e58b587 = L.marker(
-                [50.66,-79.37],
+            var marker_68faa68a90bb4c8893da3ff2f2efc79c = L.marker(
+                [43.37,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_47f4411fc0e84235babc7f407d60ef27 = L.marker(
-                [50.67333333333333,-79.37],
+            var marker_89a1c4fdb2a24ea0a07898f0b19956fa = L.marker(
+                [43.38,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_128017c6cb034ac0b461585d2e14a943 = L.marker(
-                [50.68666666666667,-79.37],
+            var marker_fe9ed8c61fca4dde8ec24ef3b09238f8 = L.marker(
+                [43.39,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_3dd5d7b59544477b993d505540713088 = L.marker(
-                [50.7,-79.37],
+            var marker_d3464b08b0634e48bcfa1669ebef25a6 = L.marker(
+                [43.4,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_373f346af5fa48d8a939c33bcedcb393 = L.marker(
-                [50.71333333333333,-79.37],
+            var marker_e7d3bd2d65134718b219c2534a122d67 = L.marker(
+                [43.41,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_7afed46a9733457d877f58285e118d9c = L.marker(
-                [50.72666666666667,-79.37],
+            var marker_a8c4540e824846aa83e42b0ef6751d06 = L.marker(
+                [43.42,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_731bb879bba547e0acfb6ef4efddf827 = L.marker(
-                [50.74,-79.37],
+            var marker_223a00b8b4e842a0b1eb86aee4c20c06 = L.marker(
+                [43.43,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_be44cad3bc5747e89601b9b172b4ef66 = L.marker(
-                [50.75333333333333,-79.37],
+            var marker_0a93bce86baa4af0b4adcfb750945fe9 = L.marker(
+                [43.44,-80.82],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_db3b0a623b2e4f318f60cc2876f043ed = L.marker(
-                [50.766666666666666,-79.37],
+            var marker_efb9d44039534eb9aa5b0645faeda704 = L.marker(
+                [43.45,-80.83],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_6ffb1169fc6f48728bebd4d39bda6e5a = L.marker(
-                [50.78,-79.37],
+            var marker_c4f31807a4424cd0bb999be14cf6618b = L.marker(
+                [43.46,-80.84],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_21ef4b4cd3954d74ad1c1ff5d48a6449 = L.marker(
-                [50.79333333333334,-79.37],
+            var marker_422caad992064f90aa47ba3e9d0c6fef = L.marker(
+                [43.47,-80.85],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_be20ee51a30c4242b7dbe53694f40173 = L.marker(
-                [50.806666666666665,-79.37],
+            var marker_97f39cc6724a4a8c964ff5c428cfd80b = L.marker(
+                [43.48,-80.86],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_dda1433c3e6d4992885010e980368815 = L.marker(
-                [50.82,-79.37],
+            var marker_08fa208810a44dd597f4dd4b40caa935 = L.marker(
+                [43.49,-80.86999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_2915d74847a54362a38f77b61fa91273 = L.marker(
-                [50.833333333333336,-79.37],
+            var marker_2abbcf530cd5448baa81445289ba8169 = L.marker(
+                [43.49,-80.88],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_ee6adc1cf28c49f98ad18beff216a74a = L.marker(
-                [50.846666666666664,-79.38333333333334],
+            var marker_3829922965504dc0927decaa1078b6f0 = L.marker(
+                [43.49,-80.89],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_5af9bf16fb294414afbacb57068de750 = L.marker(
-                [50.86,-79.39666666666666],
+            var marker_3371a6c420594ed88a45ab6668e05871 = L.marker(
+                [43.5,-80.89999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_a6cdcc2131234ffb837ec8c1466880c8 = L.marker(
-                [50.873333333333335,-79.41],
+            var marker_9c503a49d1d24aeba7db7bc9213e4552 = L.marker(
+                [43.5,-80.91],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_f676ff64864b4d548ddb90d23d0a2fe5 = L.marker(
-                [50.88666666666666,-79.42333333333333],
+            var marker_022076e3a7724aa6b485e7185b7295d2 = L.marker(
+                [43.5,-80.92],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_bbc335aa7fb8444dbec28085bbda56b2 = L.marker(
-                [50.9,-79.43666666666667],
+            var marker_a5b30dc1f9d84227876b4e5377bfe0e4 = L.marker(
+                [43.5,-80.92999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_60c101eab6ce4eac97c88472104c48a0 = L.marker(
-                [50.913333333333334,-79.45],
+            var marker_9f1cbd6eec604544bba5184e754fcb23 = L.marker(
+                [43.5,-80.94],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_40b678ce655a4e69bea0989db3a67521 = L.marker(
-                [50.92666666666667,-79.46333333333334],
+            var marker_d902d1670cee4941b1eb91cfe4d949af = L.marker(
+                [43.5,-80.95],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_a544646ae61648a79601a891c1206e4b = L.marker(
-                [50.94,-79.47666666666666],
+            var marker_adc655017be8432385b2edf653c70a64 = L.marker(
+                [43.5,-80.96],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_1f6d6ff3f7ea4e9a8a4bd4312c48b0dd = L.marker(
-                [50.95333333333333,-79.49],
+            var marker_79b02eb7ef864fbeaf668af149e38250 = L.marker(
+                [43.5,-80.97],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_255195daaf6249b38b840f035aceb56c = L.marker(
-                [50.96666666666667,-79.50333333333333],
+            var marker_ca0d17c7515f4ff0bc248adbe127bd11 = L.marker(
+                [43.5,-80.98],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_5ee3bbca76804ce7898f577c8551fa19 = L.marker(
-                [50.98,-79.50333333333333],
+            var marker_b1eb97fbb2a74fbc9ae42b95bc6e20a6 = L.marker(
+                [43.5,-80.99],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_7c8d092e5d814b87aea7b33be665db53 = L.marker(
-                [50.99333333333333,-79.50333333333333],
+            var marker_ab9e7e016e1b4bbfa7049f48a173814f = L.marker(
+                [43.5,-81.0],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
             
 
-            var marker_31d15bb2b2744c11be04125512105d2b = L.marker(
-                [51.00666666666667,-79.50333333333333],
+            var marker_453462d4f30f4ca18d072e9e53cc83a7 = L.marker(
+                [43.5,-81.00999999999999],
                 {
                     icon: new L.Icon.Default()
                     }
                 )
-                .addTo(map_506f0116ac254d25b32f18d9113a6902);
+                .addTo(map_0ea411263f75490eb4d23cba2c896c83);
             
         
         
